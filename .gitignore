@@ -16,6 +16,7 @@ out/
 # Gradle files
 .gradle/
 build/
+local.properties
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -32,9 +33,16 @@ proguard/
 # Android Studio captures folder
 captures/
 
-# Intellij
+# IntelliJ
+.idea/
 *.iml
-.idea/workspace.xml
+*.ipr
+*.iws
+*.ids
+
+#JRebel
+rebel.xml
+rebel-remote.xml
 
 # Keystore files
 *.jks

@@ -1,4 +1,4 @@
-package zebrajaeger.de.androidtest2;
+package de.zebrajaeger.androidpanohead2;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -24,7 +24,7 @@ import de.zebrajaeger.panohead2.core.event.GrblListener;
  * Created by lars on 18.09.2016.
  */
 public class PanoHead {
-    private static final Logger LOG = LoggerFactory.getLogger("XXX");
+    private static final Logger LOG = LoggerFactory.getLogger(PanoHead.class);
     private static final UUID SerialPortServiceClass_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private static PanoHead singleton = null;
 

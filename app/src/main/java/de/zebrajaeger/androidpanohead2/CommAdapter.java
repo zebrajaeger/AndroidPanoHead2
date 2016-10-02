@@ -1,4 +1,4 @@
-package zebrajaeger.de.androidtest2;
+package de.zebrajaeger.androidpanohead2;
 
 import android.bluetooth.BluetoothSocket;
 
@@ -16,7 +16,7 @@ import de.zebrajaeger.panohead2.core.serial.SerialConnectionAdapter;
  */
 public class CommAdapter extends SerialConnectionAdapter implements Runnable {
 
-    private static final Logger LOG = LoggerFactory.getLogger("XXX");
+    private static final Logger LOG = LoggerFactory.getLogger(CommAdapter.class);
 
     private BluetoothSocket socket;
     private OutputStream os;

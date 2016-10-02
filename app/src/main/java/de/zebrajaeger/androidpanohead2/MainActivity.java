@@ -1,4 +1,4 @@
-package zebrajaeger.de.androidtest2;
+package de.zebrajaeger.androidpanohead2;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -23,7 +23,7 @@ import de.zebrajaeger.panohead2.core.event.GrblStatusListener;
 
 public class MainActivity extends AppCompatActivity implements GrblStatusListener, PosListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger("XXX");
+    private static final Logger LOG = LoggerFactory.getLogger(MainActivity.class);
     private static final UUID SerialPortServiceClass_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private PosReceiver posReceiver;
 

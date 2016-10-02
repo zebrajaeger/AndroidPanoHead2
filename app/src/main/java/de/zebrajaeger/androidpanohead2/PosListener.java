@@ -1,4 +1,4 @@
-package zebrajaeger.de.androidtest2;
+package de.zebrajaeger.androidpanohead2;
 
 /**
  * Created by lars on 18.09.2016.

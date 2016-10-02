@@ -7,6 +7,19 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="zebrajaeger.de.androidtest2.SetBorderActivity">
+    tools:context="de.zebrajaeger.androidpanohead2.SetBorderActivity">
 
+    <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:layout_alignParentLeft="true" android:layout_centerHorizontal="false">
+
+        <Button
+                android:text="Button"
+                android:layout_width="45dp"
+                android:layout_height="match_parent" android:id="@+id/button5"/>
+        <Button
+                android:text="Button"
+                android:layout_width="45dp"
+                android:layout_height="match_parent" android:id="@+id/button6" android:layout_row="0" android:layout_column="14"/>
+    </GridLayout>
 </RelativeLayout>

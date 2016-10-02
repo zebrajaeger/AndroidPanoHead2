@@ -1,4 +1,4 @@
-package zebrajaeger.de.androidtest2;
+package de.zebrajaeger.androidpanohead2;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

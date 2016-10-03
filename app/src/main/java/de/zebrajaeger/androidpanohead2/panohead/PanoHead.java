@@ -1,8 +1,12 @@
-package de.zebrajaeger.androidpanohead2;
+package de.zebrajaeger.androidpanohead2.panohead;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+
+import de.zebrajaeger.jgrblconnector.Grbl;
+import de.zebrajaeger.jgrblconnector.command.GrblResponse;
+import de.zebrajaeger.jgrblconnector.event.GrblListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,15 +21,13 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
-import de.zebrajaeger.panohead2.core.Grbl;
-import de.zebrajaeger.panohead2.core.event.GrblListener;
-
 /**
  * Created by lars on 18.09.2016.
  */
 public class PanoHead {
     private static final Logger LOG = LoggerFactory.getLogger(PanoHead.class);
     private static final UUID SerialPortServiceClass_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    public static final int REQUEST_STATUS_PERIOD_MS = 300;
     private static PanoHead singleton = null;
 
     private final BluetoothAdapter bta;
@@ -136,7 +138,7 @@ public class PanoHead {
             public void run() {
                 try {
                     for (; ; ) {
-                        Thread.sleep(500);
+                        Thread.sleep(REQUEST_STATUS_PERIOD_MS);
                         try {
                             if (isConnected()) {
                                 grbl.requestStatus();
@@ -156,5 +158,13 @@ public class PanoHead {
 
     public void addListener(GrblListener l) {
         grbl.addListener(l);
+    }
+
+    public void removeListener(GrblListener l) {
+        grbl.removeListener(l);
+    }
+
+    public GrblResponse moveXYRelativeBlocking(float x, float y) throws InterruptedException, IOException {
+        return grbl.moveXYRelativeBlocking(x, y);
     }
 }

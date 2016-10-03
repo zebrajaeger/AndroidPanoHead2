@@ -36,5 +36,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.0'
     compile 'com.android.support:design:24.2.0'
     //compile 'org.slf4j:slf4j-android:1.7.21'
-    compile 'de.zebrajaeger:panohead2-core:1.0-SNAPSHOT'
+    compile 'de.zebrajaeger:jGrblConnector:1.0-SNAPSHOT'
 }

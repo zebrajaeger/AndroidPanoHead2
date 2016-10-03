@@ -1,4 +1,4 @@
-package de.zebrajaeger.androidpanohead2;
+package de.zebrajaeger.androidpanohead2.pos;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package de.zebrajaeger.androidpanohead2;
+package de.zebrajaeger.androidpanohead2.panohead;
 
 import android.bluetooth.BluetoothSocket;
 
@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import de.zebrajaeger.panohead2.core.serial.SerialConnectionAdapter;
+import de.zebrajaeger.jgrblconnector.serial.SerialConnectionAdapter;
 
 /**
  * Created by lars on 18.09.2016.

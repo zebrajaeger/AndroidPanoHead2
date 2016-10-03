@@ -30,16 +30,6 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test"
-        android:id="@+id/button"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/textView"
-        android:layout_marginBottom="32dp"
-        android:onClick="onTest" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="Set Bounds"
         android:id="@+id/button2"
         android:layout_below="@+id/select_device_button"

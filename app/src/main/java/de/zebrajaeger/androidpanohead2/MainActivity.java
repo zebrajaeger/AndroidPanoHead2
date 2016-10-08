@@ -107,9 +107,14 @@ public class MainActivity extends AppCompatActivity {
     return super.onOptionsItemSelected(item);
   }
 
-  public void onSetBounds(View v) {
+  public void onSetPhotoBounds(View v) {
     Intent intent = new Intent(this, SetBorderActivity.class);
     startActivityForResult(intent,90);
+  }
+
+  public void onSetPhotoPanoramic(View v) {
+    Intent intent = new Intent(this, SetBorderActivity.class);
+    startActivityForResult(intent,91);
   }
 
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -120,8 +125,10 @@ public class MainActivity extends AppCompatActivity {
           String result = res.getString("param_result");
           Double x1 = res.getDouble("x1");
           Double x2 = res.getDouble("x2");
-          int i=0;
-          ++i;
+        }
+        break;
+      case 91:
+        if (resultCode == RESULT_OK) {
         }
         break;
     }

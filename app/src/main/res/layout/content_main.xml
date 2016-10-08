@@ -35,5 +35,5 @@
         android:layout_below="@+id/select_device_button"
         android:layout_alignRight="@+id/select_device_button"
         android:layout_alignParentLeft="true"
-        android:onClick="onSetBounds" />
+        android:onClick="onSetPhotoBounds" />
 </RelativeLayout>

@@ -1,26 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="de.zebrajaeger.androidpanohead2.SetBorderActivity">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                tools:context="de.zebrajaeger.androidpanohead2.SetBorderActivity">
 
-    <GridLayout
-            android:layout_width="match_parent"
+    <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="match_parent" android:layout_alignParentLeft="true" android:layout_centerHorizontal="false">
 
-        <Button
-                android:text="Left"
-                android:layout_width="45dp"
-                android:layout_height="match_parent" android:id="@+id/button_left" android:onClick="onButtonLeft"/>
-        <Button
-                android:text="Right"
-                android:layout_width="45dp"
-                android:layout_height="match_parent" android:id="@+id/button_right" android:layout_column="14"
-                android:onClick="onButtonRight"/>
-    </GridLayout>
+        <Button android:id="@+id/button_left"
+                android:text="Le\nft"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:onClick="onButtonLeft"
+        />
+
+        <view android:id="@+id/view2"
+              class="de.zebrajaeger.androidpanohead2.AngleView"
+              android:layout_height="match_parent"
+              android:layout_width="wrap_content"
+              android:layout_alignParentTop="true"
+              android:layout_toRightOf="@id/button_left"
+              android:layout_toLeftOf="@id/button_right"
+        />
+
+        <Button android:id="@+id/button_right"
+                android:text="Rig\nht"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:onClick="onButtonRight"
+                android:layout_alignParentRight="true"
+        />
+
+
+    </RelativeLayout>
 </RelativeLayout>

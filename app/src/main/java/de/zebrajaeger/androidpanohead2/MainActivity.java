@@ -4,14 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import de.zebrajaeger.androidpanohead2.data.Storage;
 import de.zebrajaeger.androidpanohead2.panohead.PanoHead;
 import de.zebrajaeger.androidpanohead2.util.FinalInt;
 
@@ -49,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(posReceiver, filter);
         return posReceiver;
     }*/
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+    Storage.initAndLoadSilently(getApplicationContext());
+  }
 
   public void buttonBtSelectDeviceOnClick(View v) {
 
@@ -109,30 +114,86 @@ public class MainActivity extends AppCompatActivity {
 
   public void onSetPhotoBounds(View v) {
     Intent intent = new Intent(this, SetBorderActivity.class);
-    startActivityForResult(intent,90);
+    intent.putExtra("title", "Set Image Bounds");
+    startActivityForResult(intent, 90);
   }
 
-  public void onSetPhotoPanoramic(View v) {
+  public void onSetPhotoBoundsResult(int resultCode, Bundle res) {
+    if (resultCode != RESULT_OK) {
+      return;
+    }
+
+    // ?? String result = res.getString("param_result");
+    boolean dirty = false;
+    if (res.containsKey("x1") && res.containsKey("x2")) {
+      double x1 = res.getDouble("x1");
+      double x2 = res.getDouble("x2");
+      double diff = Math.abs(x1 - x2);
+      Storage.instance().getShooterData().setImgWidth(diff);
+      dirty = true;
+    }
+
+    if (res.containsKey("y1") && res.containsKey("y2")) {
+      double y1 = res.getDouble("y1");
+      double y2 = res.getDouble("y2");
+      double diff = Math.abs(y1 - y2);
+      Storage.instance().getShooterData().setImgHeigth(diff);
+      dirty = true;
+    }
+    if (dirty) {
+      Storage.storeSilently();
+    }
+  }
+
+  public void onSetPanoramicBounds(View v) {
     Intent intent = new Intent(this, SetBorderActivity.class);
-    startActivityForResult(intent,91);
+    intent.putExtra("title", "Set Panoramic Bounds");
+    startActivityForResult(intent, 91);
+  }
+
+  public void onSetPanoramicBoundsResult(int resultCode, Bundle res) {
+    if (resultCode != RESULT_OK) {
+      return;
+    }
+
+    if (res.containsKey("x1") && res.containsKey("x2")) {
+      double x1 = res.getDouble("x1");
+      double x2 = res.getDouble("x2");
+      double width = Math.abs(x1 - x2);
+      // special case: full range (or more)
+      if (width >= 360.0d) {
+        x1 = 0.0d;
+        width = 360.0d;
+      }
+      Storage.instance().getShooterData().setPanoWidth(width);
+      Storage.instance().getShooterData().setPanoWidthStartAngle(x1);
+    }
+
+    if (res.containsKey("y1") && res.containsKey("y2")) {
+      double y1 = res.getDouble("y1");
+      double y2 = res.getDouble("y2");
+      double height = Math.abs(y1 - y2);
+      // special case: full range (or more)
+      if (height >= 180.0d) {
+        y1 = 0.0d;
+        height = 180.0d;
+      }
+      Storage.instance().getShooterData().setPanoWidth(height);
+      Storage.instance().getShooterData().setPanoWidthStartAngle(y1);
+    }
   }
 
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    switch(requestCode) {
+    switch (requestCode) {
       case 90:
-        if (resultCode == RESULT_OK) {
-          Bundle res = data.getExtras();
-          String result = res.getString("param_result");
-          Double x1 = res.getDouble("x1");
-          Double x2 = res.getDouble("x2");
-        }
+        onSetPhotoBoundsResult(resultCode, data.getExtras());
         break;
       case 91:
-        if (resultCode == RESULT_OK) {
-        }
+        onSetPanoramicBoundsResult(resultCode, data.getExtras());
         break;
     }
   }
+
 
 /*    @Override
     public void grblStatus(GrblStatusEvent status) {

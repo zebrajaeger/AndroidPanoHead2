@@ -5,23 +5,15 @@ package de.zebrajaeger.androidpanohead2.data;
  */
 
 public class ShooterData {
-  private Boolean camTurnedVertical = false;
-  /**
-   * in Degree
-   */
-  private Double imgWidthDegree;
-  /**
-   * in Degree
-   */
-  private Double imgHeigthDegree;
-  /**
-   * in Degree
-   */
-  private Double panoWidthDegree;
-  /**
-   * in Degree
-   */
-  private Double panoHeightDegree;
+  private Double imgWidth;
+  private Double imgHeigth;
+
+  private Double panoWidth;
+  private Double panoWidthStartAngle;
+
+  private Double panoHeight;
+  private Double panoHeightStartAngle;
+
   /**
    * in Image Width [0.0..1.0]
    */
@@ -31,44 +23,52 @@ public class ShooterData {
    */
   private Double overlapHeight;
 
-  public Boolean getCamTurnedVertical() {
-    return camTurnedVertical;
+  public Double getImgWidth() {
+    return imgWidth;
   }
 
-  public void setCamTurnedVertical(Boolean camTurnedVertical) {
-    this.camTurnedVertical = camTurnedVertical;
+  public void setImgWidth(Double imgWidth) {
+    this.imgWidth = imgWidth;
   }
 
-  public Double getImgWidthDegree() {
-    return imgWidthDegree;
+  public Double getImgHeigth() {
+    return imgHeigth;
   }
 
-  public void setImgWidthDegree(Double imgWidthDegree) {
-    this.imgWidthDegree = imgWidthDegree;
+  public void setImgHeigth(Double imgHeigth) {
+    this.imgHeigth = imgHeigth;
   }
 
-  public Double getImgHeigthDegree() {
-    return imgHeigthDegree;
+  public Double getPanoWidth() {
+    return panoWidth;
   }
 
-  public void setImgHeigthDegree(Double imgHeigthDegree) {
-    this.imgHeigthDegree = imgHeigthDegree;
+  public void setPanoWidth(Double panoWidth) {
+    this.panoWidth = panoWidth;
   }
 
-  public Double getPanoWidthDegree() {
-    return panoWidthDegree;
+  public Double getPanoWidthStartAngle() {
+    return panoWidthStartAngle;
   }
 
-  public void setPanoWidthDegree(Double panoWidthDegree) {
-    this.panoWidthDegree = panoWidthDegree;
+  public void setPanoWidthStartAngle(Double panoWidthStartAngle) {
+    this.panoWidthStartAngle = panoWidthStartAngle;
   }
 
-  public Double getPanoHeightDegree() {
-    return panoHeightDegree;
+  public Double getPanoHeight() {
+    return panoHeight;
   }
 
-  public void setPanoHeightDegree(Double panoHeightDegree) {
-    this.panoHeightDegree = panoHeightDegree;
+  public void setPanoHeight(Double panoHeight) {
+    this.panoHeight = panoHeight;
+  }
+
+  public Double getPanoHeightStartAngle() {
+    return panoHeightStartAngle;
+  }
+
+  public void setPanoHeightStartAngle(Double panoHeightStartAngle) {
+    this.panoHeightStartAngle = panoHeightStartAngle;
   }
 
   public Double getOverlapWidth() {
@@ -85,13 +85,5 @@ public class ShooterData {
 
   public void setOverlapHeight(Double overlapHeight) {
     this.overlapHeight = overlapHeight;
-  }
-
-  public boolean canMakeRow() {
-    return imgWidthDegree != null && panoWidthDegree != null && overlapWidth != null;
-  }
-
-  public boolean canMakeColumn() {
-    return imgHeigthDegree != null && panoHeightDegree != null && overlapHeight != null;
   }
 }

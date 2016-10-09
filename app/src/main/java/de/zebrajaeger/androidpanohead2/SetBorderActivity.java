@@ -11,6 +11,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+import de.zebrajaeger.androidpanohead2.data.Storage;
 import de.zebrajaeger.androidpanohead2.panohead.PanoHead;
 import de.zebrajaeger.androidpanohead2.util.Gear;
 import de.zebrajaeger.androidpanohead2.util.Position;
@@ -36,6 +37,9 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
   @Override
   protected void onStart() {
     super.onStart();
+    Storage.initAndLoadSilently(getApplicationContext());
+
+    setTitle(getIntent().getExtras().getString("title"));
     findViewById(R.id.button_left).setEnabled(false);
     findViewById(R.id.button_right).setEnabled(false);
     PanoHead.instance().addListener(this);

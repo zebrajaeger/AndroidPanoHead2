@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by lars on 08.10.2016.
+ * @author lars on 08.10.2016.
  */
-
 public class ShotCalculator {
   private ShooterData shooterData;
 
@@ -16,18 +15,22 @@ public class ShotCalculator {
     this.shooterData = shooterData;
   }
 
-  protected int computePictureCount(double panoSizeDegree, double imgSizeDegree, double imageOverlapSize) {
+  protected int computePictureCount(double panoSize, double imgSize, double imageOverlapSize) {
     // Partial
-    double x = panoSizeDegree * (1 + imageOverlapSize);
+    double x = panoSize * (1 + imageOverlapSize);
     if (x < 360.0) {
       // partial panos have one less area
-      x += (panoSizeDegree * imageOverlapSize);
+      x += (panoSize * imageOverlapSize);
     }
-    return (int) Math.ceil(x / imgSizeDegree);
+    return (int) Math.ceil(x / imgSize);
   }
 
   public List<Shot> createRowShots(double y) {
-    double[] positions = computePositions(shooterData.getPanoWidthDegree(), shooterData.getImgWidthDegree(), shooterData.getOverlapWidth());
+    double[] positions = computePositions(
+        shooterData.getPanoWidthStartAngle(),
+        shooterData.getPanoWidth(),
+        shooterData.getImgWidth(),
+        shooterData.getOverlapWidth());
     List<Shot> shots = new ArrayList<>(positions.length);
     for (double pos : positions) {
       shots.add(new Shot(pos, y));
@@ -36,7 +39,12 @@ public class ShotCalculator {
   }
 
   public List<Shot> createColumnShots(double x) {
-    double[] positions = computePositions(shooterData.getPanoHeightDegree(), shooterData.getImgHeigthDegree(), shooterData.getOverlapHeight());
+    double[] positions = computePositions(
+        shooterData.getPanoHeightStartAngle(),
+        shooterData.getPanoHeight(),
+        shooterData.getImgHeigth(),
+        shooterData.getOverlapHeight());
+
     List<Shot> shots = new ArrayList<>(positions.length);
     for (double pos : positions) {
       shots.add(new Shot(x, pos));
@@ -45,8 +53,17 @@ public class ShotCalculator {
   }
 
   public List<Shot> createSimpleGridShots() {
-    double[] positionsX = computePositions(shooterData.getPanoWidthDegree(), shooterData.getImgWidthDegree(), shooterData.getOverlapWidth());
-    double[] positionsY = computePositions(shooterData.getPanoHeightDegree(), shooterData.getImgHeigthDegree(), shooterData.getOverlapHeight());
+    double[] positionsX = computePositions(
+        shooterData.getPanoWidthStartAngle(),
+        shooterData.getPanoWidth(),
+        shooterData.getImgWidth(),
+        shooterData.getOverlapWidth());
+
+    double[] positionsY = computePositions(
+        shooterData.getPanoHeightStartAngle(),
+        shooterData.getPanoHeight(),
+        shooterData.getImgHeigth(),
+        shooterData.getOverlapHeight());
     List<Shot> shots = new ArrayList<>(positionsX.length * positionsY.length);
     for (int iY = 0; iY < positionsY.length; ++iY) {
       for (int iX = 0; iX < positionsX.length; ++iX) {
@@ -56,19 +73,19 @@ public class ShotCalculator {
     return shots;
   }
 
-  private double[] computePositions(double panoSize, double imageSize, double overlap) {
+  private double[] computePositions(double offset, double panoSize, double imageSize, double overlap) {
     Integer count = computePictureCount(panoSize, imageSize, overlap);
     double[] result = new double[count];
     double period = (panoSize - imageSize) / (count - 1);
     for (int i = 0; i < count; ++i) {
-      result[i] = (imageSize / 2.0d) + ((double) i * period);
+      result[i] = offset + (imageSize / 2.0d) + ((double) i * period);
     }
     return result;
   }
 
   public ShooterScript createShooterScript() {
-    boolean isRow = shooterData.canMakeRow();
-    boolean isColumn = shooterData.canMakeColumn();
+    boolean isRow = (shooterData.getImgWidth() != null) && (shooterData.getPanoWidth() != null) && (shooterData.getOverlapWidth() != null);
+    boolean isColumn = (shooterData.getImgHeigth() != null) && (shooterData.getPanoHeight() != null) && (shooterData.getOverlapHeight() != null);
 
     if (!isRow && !isColumn) {
       // nothing

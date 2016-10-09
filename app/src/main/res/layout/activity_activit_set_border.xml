@@ -21,15 +21,6 @@
                 android:onClick="onButtonLeft"
         />
 
-        <view android:id="@+id/view2"
-              class="de.zebrajaeger.androidpanohead2.AngleView"
-              android:layout_height="match_parent"
-              android:layout_width="wrap_content"
-              android:layout_alignParentTop="true"
-              android:layout_toRightOf="@id/button_left"
-              android:layout_toLeftOf="@id/button_right"
-        />
-
         <Button android:id="@+id/button_right"
                 android:text="Rig\nht"
                 android:layout_width="50dp"
@@ -38,6 +29,13 @@
                 android:layout_alignParentRight="true"
         />
 
-
+        <view android:id="@+id/view2"
+              class="de.zebrajaeger.androidpanohead2.AngleView"
+              android:layout_height="match_parent"
+              android:layout_width="wrap_content"
+              android:layout_alignParentTop="true"
+              android:layout_toRightOf="@id/button_left"
+              android:layout_toLeftOf="@id/button_right"
+        />
     </RelativeLayout>
 </RelativeLayout>

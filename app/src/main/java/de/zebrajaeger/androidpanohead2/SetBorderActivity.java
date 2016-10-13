@@ -102,13 +102,11 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
 
   @Override
   public boolean onDown(MotionEvent event) {
-    //LOG.debug("DOWN");
     return true;
   }
 
   @Override
   public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
-    //LOG.debug("FLING");
     last = null;
     return true;
   }
@@ -126,7 +124,7 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
 
     Position newPos = new Position(e2.getX(), e2.getY()); // diff in pixel
 
-    // TODO we could use the dpi fora device independet solution of iE. 1°/cm screen
+    // TODO we could use the dpi fora device independent solution of iE. 1°/cm screen
     DisplayMetrics m = getResources().getDisplayMetrics();
     double multiplierForTwoFingers = 3;
     double screenSizeInDegreeX = 100;
@@ -235,6 +233,10 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
       //LOG.error(e.toString());
       lastEvent = e;
     }
+
+    AngleView av = (AngleView) findViewById(R.id.cam_view_horizontal);
+    av.setCamAngle(e.getMpos().getX());
+
     View bl = findViewById(R.id.button_left);
     View br = findViewById(R.id.button_right);
     if (e.getStatus() == GrblStatusEvent.Status.Idle) {

@@ -29,7 +29,7 @@
                 android:layout_alignParentRight="true"
         />
 
-        <view android:id="@+id/view2"
+        <view android:id="@+id/cam_view_horizontal"
               class="de.zebrajaeger.androidpanohead2.AngleView"
               android:layout_height="match_parent"
               android:layout_width="wrap_content"

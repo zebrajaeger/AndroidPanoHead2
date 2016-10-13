@@ -30,12 +30,18 @@ public class AngleView extends View {
   private Paint pointerPaint;
   private Bitmap camOriginalImg;
   private Bitmap camIScaledImg;
+  private int scalaAngle1 = 0;
+  private int scalaAngle2 = 360;
   @Nullable
-  private Float angle1 = 10f;
+  private Float fov = 10f;
   @Nullable
-  private Float angle2 = 30f;
+  private Float camAngle = 10f;
   @Nullable
-  private Float angleRed = 45f;
+  private Float targetAngle = 45f;
+
+  public enum ScalaType {
+    HORIZONTAL, VERTICAL
+  }
 
   public AngleView(Context context) {
     super(context);
@@ -60,21 +66,35 @@ public class AngleView extends View {
     camOriginalImg = BitmapFactory.decodeResource(getResources(), R.drawable.cam2_0400);
   }
 
-  public void setAngle(@Nullable Float angle1, @Nullable Float angle2) {
-    this.angle1 = angle1;
-    this.angle2 = angle2;
+  public void setScalaType(ScalaType type) {
+    switch (type) {
+      case HORIZONTAL:
+        scalaAngle1 = 0;
+        scalaAngle2 = 360;
+        break;
+      case VERTICAL:
+        scalaAngle1 = 0;
+        scalaAngle2 = 180;
+        break;
+      default:
+        throw new UnsupportedOperationException("ScalaType '" + type + "' unknown");
+    }
+  }
+
+  public void setTargetAngle(@Nullable Float targetAngle) {
+    this.targetAngle = targetAngle;
+    postInvalidate();
+  }
+
+
+  public void setFov(@Nullable Float angle) {
+    this.fov = angle;
     updatePointer();
     postInvalidate();
   }
 
-  public void setAngle1(@Nullable Float angle) {
-    this.angle1 = angle;
-    updatePointer();
-    postInvalidate();
-  }
-
-  public void setAngle2(@Nullable Float angle) {
-    this.angle1 = angle;
+  public void setCamAngle(@Nullable Float camAngle) {
+    this.camAngle = camAngle;
     updatePointer();
     postInvalidate();
   }
@@ -93,21 +113,20 @@ public class AngleView extends View {
   }
 
   private void updatePointer() {
-    if (angle1 != null && angle2 != null) {
+    if (camAngle != null && fov != null) {
       Path path = new Path();
       float r1 = radius;
 
       path.moveTo(centerX, centerY);
-      float x1 = (float) (Math.sin(Math.toRadians(angle1)) * r1);
-      x1 += centerX;
-      float y1 = -(float) (Math.cos(Math.toRadians(angle1)) * r1);
-      y1 += centerY;
+
+      float a1 = (float) Math.toRadians(camAngle - (fov / 2f));
+      float x1 = centerX + (float) (Math.sin(a1) * r1);
+      float y1 = centerY - (float) (Math.cos(a1) * r1);
       path.lineTo(x1, y1);
 
-      float x2 = (float) (Math.sin(Math.toRadians(angle2)) * r1);
-      x2 += centerX;
-      float y2 = -(float) (Math.cos(Math.toRadians(angle2)) * r1);
-      y2 += centerY;
+      float a2 = (float) Math.toRadians(camAngle + (fov / 2f));
+      float x2 = centerX + (float) (Math.sin(a2) * r1);
+      float y2 = centerY - (float) (Math.cos(a2) * r1);
       path.lineTo(x2, y2);
 
       path.close();
@@ -128,20 +147,9 @@ public class AngleView extends View {
     }
 
     // draw black line
-    Float angleBlack = null;
-    if (angle1 != null || angle2 != null) {
-      angleBlack = (angle1 + angle2) / 2f;
-    } else if (angle1 != null) {
-      angleBlack = angle1;
-    } else if (angle2 != null) {
-      angleBlack = angle2;
-    }
-
-    if (angleBlack != null) {
-      float x1 = (float) (Math.sin(Math.toRadians(angleBlack)) * radius);
-      x1 += centerX;
-      float y1 = -(float) (Math.cos(Math.toRadians(angleBlack)) * radius);
-      y1 += centerY;
+    if (targetAngle != null) {
+      float x1 = centerX + (float) (Math.sin(Math.toRadians(camAngle)) * radius);
+      float y1 = centerY - (float) (Math.cos(Math.toRadians(camAngle)) * radius);
 
       Paint p = new Paint();
       p.setColor(Color.GREEN);
@@ -151,10 +159,10 @@ public class AngleView extends View {
     }
 
     // draw red line
-    if (angleRed != null) {
-      float x1 = (float) (Math.sin(Math.toRadians(angleRed)) * radius);
+    if (targetAngle != null) {
+      float x1 = (float) (Math.sin(Math.toRadians(targetAngle)) * radius);
       x1 += centerX;
-      float y1 = -(float) (Math.cos(Math.toRadians(angleRed)) * radius);
+      float y1 = -(float) (Math.cos(Math.toRadians(targetAngle)) * radius);
       y1 += centerY;
 
       Paint p = new Paint();
@@ -163,19 +171,17 @@ public class AngleView extends View {
       p.setPathEffect(new DashPathEffect(new float[]{7, 3}, 0));
       p.setStrokeWidth(2f);
 
-      Path path = new  Path();
+      Path path = new Path();
       path.moveTo(centerX, centerY);
       path.lineTo(x1, y1);
-      canvas.drawPath(path,p);
+      canvas.drawPath(path, p);
     }
 
     // draw pitch lines
     float r1 = radius * 0.9f;
     float r10 = radius * 0.8f;
     float r90 = radius * 0.7f;
-    float d = (float) (Math.PI * 2f / 360f);
-    float angle = 0;
-    for (int i = 0; i < 360; ++i) {
+    for (int i = scalaAngle1; i < scalaAngle2; ++i) {
       float ri = r1;
 
       if (i % 10 == 0) {
@@ -186,23 +192,25 @@ public class AngleView extends View {
         }
       }
 
-      float x1 = (float) (Math.sin(angle) * ri);
+      float angleRad = (float) Math.toRadians(i);
+      float sin = (float) Math.sin(angleRad);
+      float cos = (float) Math.cos(angleRad);
+      float x1 = sin * ri;
       x1 += centerX;
-      float y1 = -(float) (Math.cos(angle) * ri);
+      float y1 = -cos * ri;
       y1 += centerY;
 
-      float x2 = (float) (Math.sin(angle) * radius);
+      float x2 = sin * radius;
       x2 += centerX;
-      float y2 = -(float) (Math.cos(angle) * radius);
+      float y2 = -cos * radius;
       y2 += centerY;
       canvas.drawLine(x1, y1, x2, y2, scalaPaint);
-      angle += d;
     }
 
     // draw camera
     Matrix m = new Matrix();
     canvas.save();
-    canvas.rotate((angle1 + angle2) / 2.0f, centerX, centerY);
+    canvas.rotate(camAngle, centerX, centerY);
     m.setTranslate(centerX - (camIScaledImg.getWidth() / 2), centerY - (camIScaledImg.getHeight() / 2));
     canvas.drawBitmap(camIScaledImg, m, null);
     canvas.restore();

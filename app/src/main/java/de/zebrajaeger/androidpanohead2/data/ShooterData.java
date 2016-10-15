@@ -5,7 +5,7 @@ package de.zebrajaeger.androidpanohead2.data;
  */
 
 public class ShooterData {
-  private Double imgWidth;
+/*  private Double imgWidth;
   private Double imgHeigth;
 
   private Double panoWidth;
@@ -14,13 +14,13 @@ public class ShooterData {
   private Double panoHeight;
   private Double panoHeightStartAngle;
 
-  /**
+  *//**
    * in Image Width [0.0..1.0]
-   */
+   *//*
   private Double overlapWidth;
-  /**
+  *//**
    * in Image Height [0.0..1.0]
-   */
+   *//*
   private Double overlapHeight;
 
   public Double getImgWidth() {
@@ -85,5 +85,5 @@ public class ShooterData {
 
   public void setOverlapHeight(Double overlapHeight) {
     this.overlapHeight = overlapHeight;
-  }
+  }*/
 }

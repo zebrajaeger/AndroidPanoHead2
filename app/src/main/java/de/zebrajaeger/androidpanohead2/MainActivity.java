@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onStart() {
     super.onStart();
-    Storage.initAndLoadSilently(getApplicationContext());
+    //Storage.initAndLoadSilently(getApplicationContext());
   }
 
   public void buttonBtSelectDeviceOnClick(View v) {
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
       double x1 = res.getDouble("x1");
       double x2 = res.getDouble("x2");
       double diff = Math.abs(x1 - x2);
-      Storage.instance().getShooterData().setImgWidth(diff);
+      //Storage.instance().getShooterData().setImgWidth(diff);
       dirty = true;
     }
 
@@ -137,11 +137,11 @@ public class MainActivity extends AppCompatActivity {
       double y1 = res.getDouble("y1");
       double y2 = res.getDouble("y2");
       double diff = Math.abs(y1 - y2);
-      Storage.instance().getShooterData().setImgHeigth(diff);
+      //Storage.instance().getShooterData().setImgHeigth(diff);
       dirty = true;
     }
     if (dirty) {
-      Storage.storeSilently();
+      //Storage.storeSilently();
     }
   }
 
@@ -165,8 +165,8 @@ public class MainActivity extends AppCompatActivity {
         x1 = 0.0d;
         width = 360.0d;
       }
-      Storage.instance().getShooterData().setPanoWidth(width);
-      Storage.instance().getShooterData().setPanoWidthStartAngle(x1);
+      //Storage.instance().getShooterData().setPanoWidth(width);
+      //Storage.instance().getShooterData().setPanoWidthStartAngle(x1);
     }
 
     if (res.containsKey("y1") && res.containsKey("y2")) {
@@ -178,8 +178,8 @@ public class MainActivity extends AppCompatActivity {
         y1 = 0.0d;
         height = 180.0d;
       }
-      Storage.instance().getShooterData().setPanoWidth(height);
-      Storage.instance().getShooterData().setPanoWidthStartAngle(y1);
+      //Storage.instance().getShooterData().setPanoWidth(height);
+      //Storage.instance().getShooterData().setPanoWidthStartAngle(y1);
     }
   }
 

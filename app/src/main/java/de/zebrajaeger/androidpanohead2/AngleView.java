@@ -37,7 +37,7 @@ public class AngleView extends View {
   @Nullable
   private Float camAngle = 10f;
   @Nullable
-  private Float targetAngle = 45f;
+  private Float targetAngle = null;
 
   public enum ScalaType {
     HORIZONTAL, VERTICAL
@@ -61,6 +61,7 @@ public class AngleView extends View {
   private void init() {
     scalaPaint = new Paint();
     scalaPaint.setColor(0xff000000);
+    scalaPaint.setAntiAlias(true);
     pointerPaint = new Paint();
     pointerPaint.setColor(0xffaaaaaa);
     camOriginalImg = BitmapFactory.decodeResource(getResources(), R.drawable.cam2_0400);
@@ -79,24 +80,42 @@ public class AngleView extends View {
       default:
         throw new UnsupportedOperationException("ScalaType '" + type + "' unknown");
     }
+    postInvalidate();
+  }
+
+  public void addToTargetAngle(@Nullable Float addToTargetAngle) {
+    if(targetAngle!=null){
+      targetAngle += addToTargetAngle;
+    }
   }
 
   public void setTargetAngle(@Nullable Float targetAngle) {
-    this.targetAngle = targetAngle;
-    postInvalidate();
+    if(this.targetAngle != targetAngle) {
+      this.targetAngle = targetAngle;
+      postInvalidate();
+    }
   }
 
 
   public void setFov(@Nullable Float angle) {
-    this.fov = angle;
-    updatePointer();
-    postInvalidate();
+    if(this.fov != angle) {
+      this.fov = angle;
+      updatePointer();
+      postInvalidate();
+    }
   }
 
   public void setCamAngle(@Nullable Float camAngle) {
-    this.camAngle = camAngle;
-    updatePointer();
-    postInvalidate();
+    if(this.camAngle != camAngle) {
+      this.camAngle = camAngle;
+      updatePointer();
+      postInvalidate();
+    }
+  }
+
+  @Nullable
+  public Float getTargetAngle() {
+    return targetAngle;
   }
 
   @Override

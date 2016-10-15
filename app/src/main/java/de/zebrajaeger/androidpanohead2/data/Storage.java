@@ -2,7 +2,6 @@ package de.zebrajaeger.androidpanohead2.data;
 
 import android.content.Context;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,7 @@ import java.io.IOException;
  * @author lars on 09.10.2016.
  */
 public class Storage {
-  private static final Logger LOG = LoggerFactory.getLogger(Storage.class);
+ /* private static final Logger LOG = LoggerFactory.getLogger(Storage.class);
   private static final Storage INSTANCE = new Storage();
 
   public static Storage instance() {
@@ -79,5 +78,5 @@ public class Storage {
 
   public ShooterData getShooterData() {
     return shooterData;
-  }
+  }*/
 }

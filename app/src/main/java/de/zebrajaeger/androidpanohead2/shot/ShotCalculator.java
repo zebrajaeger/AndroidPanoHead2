@@ -9,7 +9,7 @@ import java.util.List;
  * @author lars on 08.10.2016.
  */
 public class ShotCalculator {
-  private ShooterData shooterData;
+ /* private ShooterData shooterData;
 
   public ShotCalculator(ShooterData shooterData) {
     this.shooterData = shooterData;
@@ -103,5 +103,5 @@ public class ShotCalculator {
       // grid
       return new ShooterScript(createSimpleGridShots());
     }
-  }
+  }*/
 }

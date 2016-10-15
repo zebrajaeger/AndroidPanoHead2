@@ -11,7 +11,7 @@ import java.util.List;
  * Created by lars on 08.10.2016.
  */
 public class ShooterDataTest {
-  @Test
+  /*@Test
   public void testXCount1() {
     ShooterData sd = new ShooterData();
     sd.setPanoWidthDegree(20.0d);
@@ -65,6 +65,6 @@ public class ShooterDataTest {
     List<Shot> rowShots = sd.createRowShots(0.0d);
     Assert.assertEquals(rowShots.size(), 45);
     Assert.assertEquals(rowShots.get(0).getX(), 5.0d, 0.00001d);
-  }
+  }*/
 
 }

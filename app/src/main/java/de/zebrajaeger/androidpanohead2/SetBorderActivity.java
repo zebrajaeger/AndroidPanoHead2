@@ -13,7 +13,6 @@ import android.view.View;
 
 import de.zebrajaeger.androidpanohead2.data.Storage;
 import de.zebrajaeger.androidpanohead2.panohead.PanoHead;
-import de.zebrajaeger.androidpanohead2.util.Gear;
 import de.zebrajaeger.androidpanohead2.util.Position;
 import de.zebrajaeger.jgrblconnector.event.GrblStatusEvent;
 import de.zebrajaeger.jgrblconnector.event.GrblStatusListener;
@@ -34,10 +33,12 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
   private Double x1;
   private Double x2;
 
+  private Position targetPosition = null;
+
   @Override
   protected void onStart() {
     super.onStart();
-    Storage.initAndLoadSilently(getApplicationContext());
+    //Storage.initAndLoadSilently(getApplicationContext());
 
     setTitle(getIntent().getExtras().getString("title"));
     findViewById(R.id.button_left).setEnabled(false);
@@ -80,6 +81,9 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
 
   public synchronized void addDiff(Position toAdd) {
     diff = diff.add(toAdd);
+    if (targetPosition != null) {
+      targetPosition = targetPosition.add(toAdd);
+    }
   }
 
   // Called when the activity is first created.
@@ -126,7 +130,7 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
 
     // TODO we could use the dpi fora device independent solution of iE. 1°/cm screen
     DisplayMetrics m = getResources().getDisplayMetrics();
-    double multiplierForTwoFingers = 3;
+    double multiplierForTwoFingers = 10;
     double screenSizeInDegreeX = 100;
     double screenSizeInDegreeY = screenSizeInDegreeX * (double) m.heightPixels / (double) m.widthPixels;
     Position delta = newPos.sub(last).div(m.widthPixels, m.heightPixels).mul(screenSizeInDegreeX, screenSizeInDegreeY);
@@ -136,6 +140,8 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
     }
     //LOG.debug("ADD DIFF:" + delta);
     addDiff(delta);
+    AngleView av = (AngleView) findViewById(R.id.cam_view_horizontal);
+    av.addToTargetAngle((float) delta.getX());
 
     last = newPos;
 
@@ -162,6 +168,7 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
           // Wait for diff pos
           Position diff;
           while ((diff = takeDiff()).isZero()) {
+            // TODO stupid solution. Better let the Thread wait and notify it to wake up.
             try {
               Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -172,11 +179,9 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
 
           // send diff
           try {
-            Gear gear = Gear.instance();
-
             //PanoHead.instance().moveXYRelativeBlocking((float) gear.degreeToHeadValue(diff.getX()), (float) gear.degreeToHeadValue(diff.getY()));
             //LOG.debug("SEND DIFF: " + gear.degreeToHeadValue(diff.getX()));
-            PanoHead.instance().moveXYRelativeBlocking((float) gear.degreeToHeadValue(diff.getX()), 0f);
+            PanoHead.instance().moveXYRelativeBlocking((float) (diff.getX() / 360d), 0f);
             //PanoHead.instance().moveXYRelativeBlocking(0.01f, 0f);
 
           } catch (IOException e) {
@@ -235,7 +240,12 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
     }
 
     AngleView av = (AngleView) findViewById(R.id.cam_view_horizontal);
-    av.setCamAngle(e.getMpos().getX());
+    av.setCamAngle(e.getMpos().getX() * 360f);
+    if (GrblStatusEvent.Status.Idle.equals(e.getStatus()) && av.getTargetAngle() == null) {
+      av.setTargetAngle(e.getMpos().getX()* 360f);
+    } else if (!GrblStatusEvent.Status.Idle.equals(lastEvent.getStatus()) && GrblStatusEvent.Status.Idle.equals(e.getStatus())) {
+      av.setTargetAngle(e.getMpos().getX()* 360f);
+    }
 
     View bl = findViewById(R.id.button_left);
     View br = findViewById(R.id.button_right);

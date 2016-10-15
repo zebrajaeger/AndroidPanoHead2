@@ -5,7 +5,7 @@ package de.zebrajaeger.androidpanohead2.data;
  */
 
 public class SensorSize {
-  public static final SensorSize CAM_EOS_7D_MARK_II = new SensorSize(22.4d, 15.0d);
+/*  public static final SensorSize CAM_EOS_7D_MARK_II = new SensorSize(22.4d, 15.0d);
 
   private double width;
   private double height;
@@ -29,5 +29,5 @@ public class SensorSize {
         "width=" + width +
         ", height=" + height +
         '}';
-  }
+  }*/
 }

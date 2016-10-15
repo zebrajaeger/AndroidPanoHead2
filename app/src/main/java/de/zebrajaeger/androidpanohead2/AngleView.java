@@ -33,9 +33,9 @@ public class AngleView extends View {
   private int scalaAngle1 = 0;
   private int scalaAngle2 = 360;
   @Nullable
-  private Float fov = 10f;
+  private Float fov = null;
   @Nullable
-  private Float camAngle = 10f;
+  private Float camAngle = null;
   @Nullable
   private Float targetAngle = null;
 
@@ -227,12 +227,14 @@ public class AngleView extends View {
     }
 
     // draw camera
-    Matrix m = new Matrix();
-    canvas.save();
-    canvas.rotate(camAngle, centerX, centerY);
-    m.setTranslate(centerX - (camIScaledImg.getWidth() / 2), centerY - (camIScaledImg.getHeight() / 2));
-    canvas.drawBitmap(camIScaledImg, m, null);
-    canvas.restore();
+    if(camAngle!=null) {
+      Matrix m = new Matrix();
+      canvas.save();
+      canvas.rotate(camAngle, centerX, centerY);
+      m.setTranslate(centerX - (camIScaledImg.getWidth() / 2), centerY - (camIScaledImg.getHeight() / 2));
+      canvas.drawBitmap(camIScaledImg, m, null);
+      canvas.restore();
+    }
   }
 
   private static Bitmap resize(Bitmap image, int maxSize) {

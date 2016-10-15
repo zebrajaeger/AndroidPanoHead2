@@ -11,7 +11,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import de.zebrajaeger.androidpanohead2.data.Storage;
 import de.zebrajaeger.androidpanohead2.panohead.PanoHead;
 import de.zebrajaeger.androidpanohead2.util.Position;
 import de.zebrajaeger.jgrblconnector.event.GrblStatusEvent;
@@ -34,11 +33,13 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
   private Double x2;
 
   private Position targetPosition = null;
+  AngleView angleView;
 
   @Override
   protected void onStart() {
     super.onStart();
     //Storage.initAndLoadSilently(getApplicationContext());
+    angleView = (AngleView) findViewById(R.id.cam_view_horizontal);
 
     setTitle(getIntent().getExtras().getString("title"));
     findViewById(R.id.button_left).setEnabled(false);
@@ -64,12 +65,18 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
   public void onButtonLeft(View view) {
     if (lastEvent != null) {
       x1 = (double) lastEvent.getMpos().getX();
+      if(x2!=null){
+        angleView.setFov((float) Math.abs(x1-x2) * 360f);
+      }
     }
   }
 
   public void onButtonRight(View view) {
     if (lastEvent != null) {
       x2 = (double) lastEvent.getMpos().getX();
+      if(x1!=null){
+        angleView.setFov((float) Math.abs(x1-x2) * 360f);
+      }
     }
   }
 

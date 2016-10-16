@@ -66,7 +66,7 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
     if (lastEvent != null) {
       x1 = (double) lastEvent.getMpos().getX();
       if(x2!=null){
-        angleView.setFov((float) Math.abs(x1-x2) * 360f);
+        angleView.setCamFov((float) Math.abs(x1-x2) * 360f);
       }
     }
   }
@@ -75,7 +75,7 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
     if (lastEvent != null) {
       x2 = (double) lastEvent.getMpos().getX();
       if(x1!=null){
-        angleView.setFov((float) Math.abs(x1-x2) * 360f);
+        angleView.setCamFov((float) Math.abs(x1-x2) * 360f);
       }
     }
   }

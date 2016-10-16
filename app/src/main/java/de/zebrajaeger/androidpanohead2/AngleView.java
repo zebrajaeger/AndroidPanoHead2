@@ -164,7 +164,7 @@ public class AngleView extends View {
   }
 
   public void setTargetAngle(@Nullable Float targetAngle) {
-    if (this.targetAngle != targetAngle) {
+    if (isEqual(this.targetAngle, targetAngle)) {
       this.targetAngle = targetAngle;
       postInvalidate();
     }

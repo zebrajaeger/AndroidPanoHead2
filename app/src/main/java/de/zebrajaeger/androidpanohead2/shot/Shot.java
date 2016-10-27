@@ -3,31 +3,30 @@ package de.zebrajaeger.androidpanohead2.shot;
 import de.zebrajaeger.androidpanohead2.data.ICamAction;
 
 /**
- * Created by lars on 08.10.2016.
+ * @author lars on 08.10.2016.
  */
-
 public class Shot implements ICamAction {
-  private double x;
-  private double y;
+  private float x;
+  private float y;
 
-  public Shot(double x, double y) {
+  public Shot(float x, float y) {
     this.x = x;
     this.y = y;
   }
 
-  public double getX() {
+  public float getX() {
     return x;
   }
 
-  public double getY() {
+  public float getY() {
     return y;
   }
 
   @Override
   public String toString() {
-    return "Shot{" +
-        "x=" + x +
-        ", y=" + y +
-        '}';
+    return "Shot{"
+        + "x=" + x
+        + ", y=" + y
+        + '}';
   }
 }

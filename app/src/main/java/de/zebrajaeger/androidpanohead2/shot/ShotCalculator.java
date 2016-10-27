@@ -8,7 +8,9 @@ import java.util.List;
 /**
  * @author lars on 08.10.2016.
  */
-public class ShotCalculator {
+public interface ShotCalculator {
+  ShooterScript createScript(CalculatorData data);
+
  /* private ShooterData shooterData;
 
   public ShotCalculator(ShooterData shooterData) {

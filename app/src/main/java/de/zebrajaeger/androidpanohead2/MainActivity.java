@@ -6,12 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
-import de.zebrajaeger.androidpanohead2.data.Storage;
 import de.zebrajaeger.androidpanohead2.panohead.PanoHead;
+import de.zebrajaeger.androidpanohead2.shot.ShooterScript;
 import de.zebrajaeger.androidpanohead2.util.FinalInt;
 
 import org.slf4j.Logger;
@@ -20,7 +18,12 @@ import org.slf4j.LoggerFactory;
 public class MainActivity extends AppCompatActivity {
 
   private static final Logger LOG = LoggerFactory.getLogger(MainActivity.class);
-  //private PosReceiver posReceiver;
+  public static final int SET_CAM_FOV_REQUEST_CODE = 90;
+  public static final int SET_PANO_BOUNDS_REQUEST_CODE = 91;
+  private Float camFov;
+  private Float panoBorder1;
+  private Float panoBorder2;
+  private ShooterScript shooterScript;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -29,30 +32,28 @@ public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
-
-/*    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-    fab.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-            .setAction("Action", null).show();
-      }
-    });*/
   }
-
- /*   private PosReceiver registerPosReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("de.zebrajaeger.panohead.POS");
-
-        PosReceiver posReceiver = new PosReceiver();
-        registerReceiver(posReceiver, filter);
-        return posReceiver;
-    }*/
 
   @Override
   protected void onStart() {
     super.onStart();
     //Storage.initAndLoadSilently(getApplicationContext());
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    switch (requestCode) {
+      case SET_CAM_FOV_REQUEST_CODE:
+        if (resultCode == RESULT_OK && data != null) {
+          onSetCamFovResult(data.getExtras());
+        }
+        break;
+      case SET_PANO_BOUNDS_REQUEST_CODE:
+        if (resultCode == RESULT_OK && data != null) {
+          onSetPanoRangeResult(data.getExtras());
+        }
+        break;
+    }
   }
 
   public void buttonBtSelectDeviceOnClick(View v) {
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(DialogInterface dialog, int which) {
           String name = names[selected.getValue()];
           PanoHead.instance().setCurrentDevice(name);
+          // TODO activate CamFocButton
         }
       });
       builder.setNegativeButton("Cancel", null);
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
     alertDialog.show();
   }
 
+/*
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
@@ -111,114 +114,56 @@ public class MainActivity extends AppCompatActivity {
 
     return super.onOptionsItemSelected(item);
   }
+  */
 
-  public void onSetPhotoBounds(View v) {
-    Intent intent = new Intent(this, SetBorderActivity.class);
-    intent.putExtra("title", "Set Image Bounds");
-    startActivityForResult(intent, 90);
+  public void onSetCamFov(View v) {
+    Intent intent = new Intent(this, SetCamFOVActivity.class);
+    if (camFov != null) {
+      intent.putExtra(SetCamFOVActivity.CAM_FOV, camFov);
+      // TODO activate PanorangeButton
+    }
+    startActivityForResult(intent, SET_CAM_FOV_REQUEST_CODE);
   }
 
-  public void onSetPhotoBoundsResult(int resultCode, Bundle res) {
-    if (resultCode != RESULT_OK) {
-      return;
-    }
-
-    // ?? String result = res.getString("param_result");
-    boolean dirty = false;
-    if (res.containsKey("x1") && res.containsKey("x2")) {
-      double x1 = res.getDouble("x1");
-      double x2 = res.getDouble("x2");
-      double diff = Math.abs(x1 - x2);
-      //Storage.instance().getShooterData().setImgWidth(diff);
-      dirty = true;
-    }
-
-    if (res.containsKey("y1") && res.containsKey("y2")) {
-      double y1 = res.getDouble("y1");
-      double y2 = res.getDouble("y2");
-      double diff = Math.abs(y1 - y2);
-      //Storage.instance().getShooterData().setImgHeigth(diff);
-      dirty = true;
-    }
-    if (dirty) {
-      //Storage.storeSilently();
-    }
+  public void onSetCamFovResult(Bundle res) {
+    camFov = res.getFloat(SetCamFOVActivity.CAM_FOV);
+    tryCalculateShooterScript();
   }
 
-  public void onSetPanoramicBounds(View v) {
-    Intent intent = new Intent(this, SetBorderActivity.class);
-    intent.putExtra("title", "Set Panoramic Bounds");
-    startActivityForResult(intent, 91);
+  public void onSetPanoRange(View v) {
+    Intent intent = new Intent(this, SetPanoRangeActivity.class);
+    if (camFov != null) {
+      intent.putExtra(SetPanoRangeActivity.CAM_FOV, camFov);
+    }
+    if (panoBorder1 != null && panoBorder2 != null) {
+      intent.putExtra(SetPanoRangeActivity.PANO_BORDER_1, panoBorder1);
+      intent.putExtra(SetPanoRangeActivity.PANO_BORDER_2, panoBorder2);
+    }
+    startActivityForResult(intent, SET_PANO_BOUNDS_REQUEST_CODE);
   }
 
-  public void onSetPanoramicBoundsResult(int resultCode, Bundle res) {
-    if (resultCode != RESULT_OK) {
-      return;
-    }
+  public void onSetPanoRangeResult(Bundle res) {
+    panoBorder1 = res.getFloat(SetPanoRangeActivity.PANO_BORDER_1);
+    panoBorder2 = res.getFloat(SetPanoRangeActivity.PANO_BORDER_2);
+    tryCalculateShooterScript();
+  }
 
-    if (res.containsKey("x1") && res.containsKey("x2")) {
-      double x1 = res.getDouble("x1");
-      double x2 = res.getDouble("x2");
-      double width = Math.abs(x1 - x2);
-      // special case: full range (or more)
-      if (width >= 360.0d) {
-        x1 = 0.0d;
-        width = 360.0d;
-      }
-      //Storage.instance().getShooterData().setPanoWidth(width);
-      //Storage.instance().getShooterData().setPanoWidthStartAngle(x1);
-    }
+  public void onBtnShot(View v) {
+    Intent intent = new Intent(this, PanoShotActivity.class);
+    intent.putExtra("imgCountX", 5);
+    intent.putExtra("imgCountY", 1);
+    startActivityForResult(intent, 92);
+  }
 
-    if (res.containsKey("y1") && res.containsKey("y2")) {
-      double y1 = res.getDouble("y1");
-      double y2 = res.getDouble("y2");
-      double height = Math.abs(y1 - y2);
-      // special case: full range (or more)
-      if (height >= 180.0d) {
-        y1 = 0.0d;
-        height = 180.0d;
-      }
-      //Storage.instance().getShooterData().setPanoWidth(height);
-      //Storage.instance().getShooterData().setPanoWidthStartAngle(y1);
+  private void tryCalculateShooterScript(){
+    //shooterScript = new ShooterScript();
+
+
+    if(shooterScript!=null){
+      // TODO activate Shoot Button
+    }else{
+      // TODO deactivate Shoot Button
     }
   }
 
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    switch (requestCode) {
-      case 90:
-        onSetPhotoBoundsResult(resultCode, data.getExtras());
-        break;
-      case 91:
-        onSetPanoramicBoundsResult(resultCode, data.getExtras());
-        break;
-    }
-  }
-
-
-/*    @Override
-    public void grblStatus(GrblStatusEvent status) {
-        Intent i = new Intent("de.zebrajaeger.panohead.POS");
-        i.putExtra("status", status.getStatus().toString());
-        i.putExtra("m.x", status.getMpos().getX());
-        i.putExtra("m.y", status.getMpos().getY());
-        i.putExtra("w.x", status.getWpos().getX());
-        i.putExtra("w.y", status.getWpos().getY());
-        sendBroadcast(i);
-    }*/
-
-
-/*    public void onTest(View v) {
-        Intent i = new Intent("de.zebrajaeger.panohead.POS");
-        i.putExtra("status", "Yo!");
-        i.putExtra("m.x", 1.0f);
-        i.putExtra("m.y", 2.0f);
-        i.putExtra("w.x", 3.0f);
-        i.putExtra("w.y", 4.0f);
-        sendBroadcast(i);
-    }*/
-
-  /*  @Override
-    public void onPos(String status, float mx, float my, float wx, float wy) {
-        LOG.error("ONPOS: " + status + ", " + mx + ", " + my + ", " + wx + ", " + wy);
-    }*/
 }

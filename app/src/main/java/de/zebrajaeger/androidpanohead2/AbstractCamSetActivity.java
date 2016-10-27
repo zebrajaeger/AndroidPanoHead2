@@ -21,27 +21,31 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class SetBorderActivity extends AppCompatActivity implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, GrblStatusListener {
-  private static final Logger LOG = LoggerFactory.getLogger(SetBorderActivity.class);
+/**
+ * @author lars on 23.10.2016.
+ */
+public abstract class AbstractCamSetActivity extends AppCompatActivity implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, GrblStatusListener {
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractCamSetActivity.class);
   private GestureDetectorCompat mDetector;
   private Position last = null;
   private Position diff = new Position();
   private Thread grblThread = null;
 
   private GrblStatusEvent lastEvent = null;
-  private Double x1;
-  private Double x2;
 
   private Position targetPosition = null;
-  AngleView angleView;
 
   @Override
   protected void onStart() {
     super.onStart();
     //Storage.initAndLoadSilently(getApplicationContext());
-    angleView = (AngleView) findViewById(R.id.cam_view_horizontal);
+    if (getSupportActionBar() != null) {
+      getSupportActionBar().hide();
+    }
+    if (getActionBar() != null) {
+      getActionBar().setDisplayShowTitleEnabled(false);
+    }
 
-    setTitle(getIntent().getExtras().getString("title"));
     findViewById(R.id.button_left).setEnabled(false);
     findViewById(R.id.button_right).setEnabled(false);
     PanoHead.instance().addListener(this);
@@ -62,24 +66,6 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
     super.onStop();
   }
 
-  public void onButtonLeft(View view) {
-    if (lastEvent != null) {
-      x1 = (double) lastEvent.getMpos().getX();
-      if(x2!=null){
-        angleView.setCamFov((float) Math.abs(x1-x2) * 360f);
-      }
-    }
-  }
-
-  public void onButtonRight(View view) {
-    if (lastEvent != null) {
-      x2 = (double) lastEvent.getMpos().getX();
-      if(x1!=null){
-        angleView.setCamFov((float) Math.abs(x1-x2) * 360f);
-      }
-    }
-  }
-
   public synchronized Position takeDiff() {
     Position result = diff;
     diff = new Position();
@@ -93,11 +79,9 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
     }
   }
 
-  // Called when the activity is first created.
   @Override
-  public void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_activit_set_border);
     mDetector = new GestureDetectorCompat(this, this);
     mDetector.setIsLongpressEnabled(false);
   }
@@ -107,7 +91,6 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
     if (mDetector != null) {
       this.mDetector.onTouchEvent(event);
     }
-    // Be sure to call the superclass implementation
     return super.onTouchEvent(event);
   }
 
@@ -145,7 +128,6 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
     if (e2.getPointerCount() == 2) {
       delta = delta.mul(multiplierForTwoFingers);
     }
-    //LOG.debug("ADD DIFF:" + delta);
     addDiff(delta);
     AngleView av = (AngleView) findViewById(R.id.cam_view_horizontal);
     av.addToTargetAngle((float) delta.getX());
@@ -157,12 +139,10 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
 
   @Override
   public void onShowPress(MotionEvent event) {
-    //LOG.debug("onShowPress: " + event.toString());
   }
 
   @Override
   public boolean onSingleTapUp(MotionEvent event) {
-    //LOG.debug("onSingleTapUp: " + event.toString());
     return true;
   }
 
@@ -186,11 +166,7 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
 
           // send diff
           try {
-            //PanoHead.instance().moveXYRelativeBlocking((float) gear.degreeToHeadValue(diff.getX()), (float) gear.degreeToHeadValue(diff.getY()));
-            //LOG.debug("SEND DIFF: " + gear.degreeToHeadValue(diff.getX()));
             PanoHead.instance().moveXYRelativeBlocking((float) (diff.getX() / 360d), 0f);
-            //PanoHead.instance().moveXYRelativeBlocking(0.01f, 0f);
-
           } catch (IOException e) {
             LOG.error("Grbl Command Thread Exception while moveXYRelativeBlocking", e);
 
@@ -239,19 +215,22 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
     }
   }
 
+  public GrblStatusEvent getLastEvent() {
+    return lastEvent;
+  }
+
   @Override
   public void grblStatus(GrblStatusEvent e) {
     if (!e.equals(lastEvent)) {
-      //LOG.error(e.toString());
       lastEvent = e;
     }
 
     AngleView av = (AngleView) findViewById(R.id.cam_view_horizontal);
     av.setCamAngle(e.getMpos().getX() * 360f);
     if (GrblStatusEvent.Status.Idle.equals(e.getStatus()) && av.getTargetAngle() == null) {
-      av.setTargetAngle(e.getMpos().getX()* 360f);
+      av.setTargetAngle(e.getMpos().getX() * 360f);
     } else if (!GrblStatusEvent.Status.Idle.equals(lastEvent.getStatus()) && GrblStatusEvent.Status.Idle.equals(e.getStatus())) {
-      av.setTargetAngle(e.getMpos().getX()* 360f);
+      av.setTargetAngle(e.getMpos().getX() * 360f);
     }
 
     View bl = findViewById(R.id.button_left);
@@ -267,22 +246,40 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
 
   @Override
   public boolean onSingleTapConfirmed(MotionEvent e) {
-    //LOG.error("SINGLE-TAP-CONFIRMED" + e);
     return false;
   }
 
   @Override
   public boolean onDoubleTap(MotionEvent e) {
-    //LOG.error("DOUBLE-TAP " + e);
+    showCloseDialog();
+    return false;
+  }
+
+  @Override
+  public boolean onDoubleTapEvent(MotionEvent e) {
+    return false;
+  }
+
+  @Override
+  public void onBackPressed() {
+    if (canFinishWithResult()) {
+      finishWithResult();
+    } else {
+      finishWithoutResult();
+    }
+  }
+
+  protected void showCloseDialog() {
     AlertDialog.Builder adb = new AlertDialog.Builder(this);
-    //adb.setView(this.getWindow().getDecorView());
     adb.setTitle("Take Values?");
     adb.setIcon(android.R.drawable.ic_dialog_alert);
-    adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-      public void onClick(DialogInterface dialog, int which) {
-        finishWithResult();
-      }
-    });
+    if (canFinishWithResult()) {
+      adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int which) {
+          finishWithResult();
+        }
+      });
+    }
 
     adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
       public void onClick(DialogInterface dialog, int which) {
@@ -290,24 +287,17 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
       }
     });
     adb.show();
-    return false;
   }
 
-  @Override
-  public boolean onDoubleTapEvent(MotionEvent e) {
-    //LOG.error("DOUBLE-TAP-EVENT" + e);
-    return false;
-  }
+  protected abstract boolean canFinishWithResult();
+
+  protected abstract void onFinish(Bundle conData);
 
   private void finishWithResult() {
     Bundle conData = new Bundle();
-    conData.putString("param_result", "Thanks Thanks");
-    if (x1 != null) {
-      conData.putDouble("x1", x1);
-    }
-    if (x2 != null) {
-      conData.putDouble("x2", x2);
-    }
+
+    onFinish(conData);
+
     Intent intent = new Intent();
     intent.putExtras(conData);
     setResult(RESULT_OK, intent);
@@ -319,5 +309,4 @@ public class SetBorderActivity extends AppCompatActivity implements GestureDetec
     setResult(RESULT_CANCELED, intent);
     finish();
   }
-
 }

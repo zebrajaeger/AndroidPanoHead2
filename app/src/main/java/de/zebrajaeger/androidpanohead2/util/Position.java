@@ -1,5 +1,7 @@
 package de.zebrajaeger.androidpanohead2.util;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
 /**
  * Created by lars on 02.10.2016.
  */
@@ -99,6 +101,7 @@ public class Position {
 
   @Override
   public String toString() {
-    return "Position{" + "x=" + x + ", y=" + y + '}';
+    return ReflectionToStringBuilder.toString(this);
   }
+
 }

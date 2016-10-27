@@ -1,5 +1,6 @@
 package de.zebrajaeger.androidpanohead2.util;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +92,6 @@ public class AngleRange {
 
   public void setFov(float fov) {
     if (isComplete()) {
-      Float a = getAngle();
       float fov2 = fov / 2f;
       this.a1 -= fov2;
       this.a2 += fov2;
@@ -103,11 +103,9 @@ public class AngleRange {
 
   @Override
   public String toString() {
-    return "AngleRange{"
-        + "a1=" + a1
-        + ", a2=" + a2
-        + '}';
+    return ReflectionToStringBuilder.toString(this);
   }
+
 
   public static AngleRange newEmpty() {
     return new AngleRange(null, null);

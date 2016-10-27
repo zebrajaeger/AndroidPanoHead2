@@ -262,7 +262,7 @@ public class AngleView extends View {
 
 /*    // draw black line
     if (camRange.isComplete()) {
-      float a = camRange.getAngle();
+      float a = camRange.getSweepAngle();
       float x1 = centerX + (float) (Math.sin(Math.toRadians(a)) * radius);
       float y1 = centerY - (float) (Math.cos(Math.toRadians(a)) * radius);
 

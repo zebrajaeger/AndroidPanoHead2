@@ -1,11 +1,11 @@
 package de.zebrajaeger.androidpanohead2.shot;
 
-import de.zebrajaeger.androidpanohead2.data.ICamAction;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 /**
  * @author lars on 08.10.2016.
  */
-public class Shot implements ICamAction {
+public class Shot {
   private float x;
   private float y;
 
@@ -24,9 +24,6 @@ public class Shot implements ICamAction {
 
   @Override
   public String toString() {
-    return "Shot{"
-        + "x=" + x
-        + ", y=" + y
-        + '}';
+    return ReflectionToStringBuilder.toString(this);
   }
 }

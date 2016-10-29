@@ -65,7 +65,7 @@ public class PanoHead {
   }
 
   public ArrayList<String> getSortedDeviceNames() {
-    return new ArrayList(new TreeSet(bta.getBondedDevices()));
+    return new ArrayList(new TreeSet(devices.keySet()));
   }
 
   public String[] getSortedDeviceNamesAsArray() {

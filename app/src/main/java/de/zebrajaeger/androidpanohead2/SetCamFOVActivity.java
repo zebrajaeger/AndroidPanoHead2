@@ -29,7 +29,7 @@ public class SetCamFOVActivity extends AbstractCamSetActivity {
     angleView = (AngleView) findViewById(R.id.cam_view_horizontal);
     Bundle extras = getIntent().getExtras();
 
-    if (extras.containsKey(CAM_FOV)) {
+    if (extras !=null && extras.containsKey(CAM_FOV)) {
       camFov = extras.getFloat(CAM_FOV);
     }
   }

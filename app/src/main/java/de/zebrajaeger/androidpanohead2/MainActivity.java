@@ -10,17 +10,24 @@ import android.view.View;
 
 import de.zebrajaeger.androidpanohead2.panohead.PanoHead;
 import de.zebrajaeger.androidpanohead2.shot.ShooterScript;
+import de.zebrajaeger.androidpanohead2.storage.AppData;
+import de.zebrajaeger.androidpanohead2.storage.Storage;
+import de.zebrajaeger.androidpanohead2.util.Bounds1D;
+import de.zebrajaeger.androidpanohead2.util.Bounds2D;
 import de.zebrajaeger.androidpanohead2.util.FinalInt;
+import de.zebrajaeger.androidpanohead2.util.Fov1D;
+import de.zebrajaeger.androidpanohead2.util.Fov2D;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
   private static final Logger LOG = LoggerFactory.getLogger(MainActivity.class);
   public static final int SET_CAM_FOV_REQUEST_CODE = 90;
   public static final int SET_PANO_BOUNDS_REQUEST_CODE = 91;
-  private Float camFov;
   private Float panoBorder1;
   private Float panoBorder2;
   private ShooterScript shooterScript;
@@ -37,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onStart() {
     super.onStart();
-    //Storage.initAndLoadSilently(getApplicationContext());
+    btAutoconnect();
   }
 
   @Override
@@ -56,12 +63,25 @@ public class MainActivity extends AppCompatActivity {
     }
   }
 
-  public void buttonBtSelectDeviceOnClick(View v) {
+  public boolean btAutoconnect() {
+    AppData appData = Storage.getInstance().getAppData(getApplicationContext());
+    PanoHead.instance().refreshDeviceList();
+    final ArrayList<String> names = PanoHead.instance().getSortedDeviceNames();
+    String btAdapter = appData.getBtAdapter();
+    if (names.contains(btAdapter)) {
+      if (PanoHead.instance().setCurrentDevice(btAdapter)) {
+        // TODO activate CamFocButton
+        return true;
+      }
+    }
+    return false;
+  }
 
+  public void buttonBtSelectDeviceOnClick(View v) {
     PanoHead.instance().refreshDeviceList();
     final String[] names = PanoHead.instance().getSortedDeviceNamesAsArray();
-    boolean hasDevices = (names.length > 0);
 
+    boolean hasDevices = (names.length > 0);
     final FinalInt selected = new FinalInt(hasDevices ? 0 : -1);
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setTitle(hasDevices ? "Select Bluetooth Device" : "No Devices Found");
@@ -77,8 +97,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(DialogInterface dialog, int which) {
           String name = names[selected.getValue()];
-          PanoHead.instance().setCurrentDevice(name);
-          // TODO activate CamFocButton
+
+          Storage.getInstance().getAppData(getApplicationContext()).setBtAdapter(name);
+          Storage.getInstance().save(getApplicationContext());
+
+          if (PanoHead.instance().setCurrentDevice(name)) {
+            // TODO activate CamFocButton
+          }
         }
       });
       builder.setNegativeButton("Cancel", null);
@@ -118,33 +143,67 @@ public class MainActivity extends AppCompatActivity {
 
   public void onSetCamFov(View v) {
     Intent intent = new Intent(this, SetCamFOVActivity.class);
+    Fov2D camFov = Storage.getInstance().getAppData(getApplicationContext()).getCamFov();
     if (camFov != null) {
-      intent.putExtra(SetCamFOVActivity.CAM_FOV, camFov);
-      // TODO activate PanorangeButton
+      intent.putExtra(SetCamFOVActivity.CAM_FOV, camFov.getX().getSweepAngle());
     }
     startActivityForResult(intent, SET_CAM_FOV_REQUEST_CODE);
   }
 
   public void onSetCamFovResult(Bundle res) {
-    camFov = res.getFloat(SetCamFOVActivity.CAM_FOV);
+    Fov2D camFov = getAppData().getCamFov();
+    if (camFov == null) {
+      camFov = new Fov2D();
+      getAppData().setCamFov(camFov);
+    }
+    Fov1D fovX = camFov.getX();
+    if (fovX == null) {
+      fovX = new Fov1D(res.getFloat(SetCamFOVActivity.CAM_FOV));
+      camFov.setX(fovX);
+    }
+    saveAppData();
+
+    // TODO activate PanorangeButton
     tryCalculateShooterScript();
   }
 
   public void onSetPanoRange(View v) {
     Intent intent = new Intent(this, SetPanoRangeActivity.class);
+
+    Fov2D camFov = getAppData().getCamFov();
     if (camFov != null) {
-      intent.putExtra(SetPanoRangeActivity.CAM_FOV, camFov);
+      intent.putExtra(SetPanoRangeActivity.CAM_FOV, camFov.getX().getSweepAngle());
     }
-    if (panoBorder1 != null && panoBorder2 != null) {
-      intent.putExtra(SetPanoRangeActivity.PANO_BORDER_1, panoBorder1);
-      intent.putExtra(SetPanoRangeActivity.PANO_BORDER_2, panoBorder2);
+
+    Bounds2D panoBounds = getAppData().getPanoBounds();
+    if (panoBounds != null) {
+      intent.putExtra(SetPanoRangeActivity.PANO_BORDER_1, panoBounds.getX().getB1());
+      intent.putExtra(SetPanoRangeActivity.PANO_BORDER_2, panoBounds.getX().getB2());
     }
+
     startActivityForResult(intent, SET_PANO_BOUNDS_REQUEST_CODE);
   }
 
   public void onSetPanoRangeResult(Bundle res) {
-    panoBorder1 = res.getFloat(SetPanoRangeActivity.PANO_BORDER_1);
-    panoBorder2 = res.getFloat(SetPanoRangeActivity.PANO_BORDER_2);
+    if(!res.containsKey(SetPanoRangeActivity.PANO_BORDER_1)||!res.containsKey(SetPanoRangeActivity.PANO_BORDER_2)){
+      throw new IllegalArgumentException("one or both borders missing");
+    }
+
+    Bounds2D panoBounds = getAppData().getPanoBounds();
+    if(panoBounds==null){
+      panoBounds  = new Bounds2D();
+      getAppData().setPanoBounds(panoBounds);
+    }
+
+    Bounds1D boundsX = panoBounds.getX();
+    if(boundsX==null){
+      boundsX = new Bounds1D();
+      panoBounds.setX(boundsX);
+    }
+
+    boundsX.setB1(res.getFloat(SetPanoRangeActivity.PANO_BORDER_1));
+    boundsX.setB2(res.getFloat(SetPanoRangeActivity.PANO_BORDER_2));
+
     tryCalculateShooterScript();
   }
 
@@ -155,15 +214,22 @@ public class MainActivity extends AppCompatActivity {
     startActivityForResult(intent, 92);
   }
 
-  private void tryCalculateShooterScript(){
+  private void tryCalculateShooterScript() {
     //shooterScript = new ShooterScript();
 
 
-    if(shooterScript!=null){
+    if (shooterScript != null) {
       // TODO activate Shoot Button
-    }else{
+    } else {
       // TODO deactivate Shoot Button
     }
   }
 
+  private AppData getAppData() {
+    return Storage.getInstance().getAppData(getApplicationContext());
+  }
+
+  private void saveAppData() {
+    Storage.getInstance().save(getApplicationContext());
+  }
 }

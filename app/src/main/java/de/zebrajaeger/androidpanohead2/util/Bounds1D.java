@@ -3,12 +3,15 @@ package de.zebrajaeger.androidpanohead2.util;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 /**
- * Created by lars on 27.10.2016.
+ * @author lars on 27.10.2016.
  */
 
 public class Bounds1D {
   private float b1;
   private float b2;
+
+  public Bounds1D() {
+  }
 
   public Bounds1D(float b1, float b2) {
     this.b1 = b1;
@@ -21,6 +24,14 @@ public class Bounds1D {
 
   public float getB2() {
     return b2;
+  }
+
+  public void setB1(float b1) {
+    this.b1 = b1;
+  }
+
+  public void setB2(float b2) {
+    this.b2 = b2;
   }
 
   public float getCenter() {

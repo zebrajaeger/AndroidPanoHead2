@@ -10,6 +10,9 @@ public class Fov2D {
   private Fov1D x;
   private Fov1D y;
 
+  public Fov2D() {
+  }
+
   public Fov2D(float x, float y) {
     this.x = new Fov1D(x);
     this.y = new Fov1D(y);
@@ -26,6 +29,14 @@ public class Fov2D {
 
   public Fov1D getY() {
     return y;
+  }
+
+  public void setX(Fov1D x) {
+    this.x = x;
+  }
+
+  public void setY(Fov1D y) {
+    this.y = y;
   }
 
   @Override

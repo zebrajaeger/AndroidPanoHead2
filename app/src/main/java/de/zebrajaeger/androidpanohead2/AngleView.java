@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
  */
 
 public class AngleView extends View {
-  boolean test = true;
+  boolean test = false;
 
   // common
   private int w;
@@ -170,6 +170,9 @@ public class AngleView extends View {
     }
   }
 
+  public static boolean isNotEqual(Float f1, Float f2) {
+    return  !isEqual(f1,f2);
+  }
   public static boolean isEqual(Float f1, Float f2) {
     if (f1 == f2) {
       return true;
@@ -189,10 +192,13 @@ public class AngleView extends View {
   }
 
   public void setCamAngle(float angle) {
-    if (camRange.isComplete() && isEqual(this.camRange.getAngle(), angle)) {
+    if(isNotEqual(this.camRange.getAngle(), angle)){
       camRange.setAngle(angle);
-      updateCamPath();
       postInvalidate();
+    }
+
+    if (camRange.isComplete()) {
+      updateCamPath();
     }
   }
 
@@ -320,7 +326,7 @@ public class AngleView extends View {
     }
 
     // draw camera
-    if (camRange.isComplete()) {
+    if (camRange.getAngle()!=null) {
       Matrix m = new Matrix();
       canvas.save();
       canvas.rotate(camRange.getAngle(), centerX, centerY);

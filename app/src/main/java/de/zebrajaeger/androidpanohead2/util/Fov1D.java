@@ -36,6 +36,14 @@ public class Fov1D {
     return sweepAngle * (1f - overlap);
   }
 
+  public void setSweepAngle(float sweepAngle) {
+    this.sweepAngle = sweepAngle;
+  }
+
+  public void setOverlap(float overlap) {
+    this.overlap = overlap;
+  }
+
   @Override
   public String toString() {
     return ReflectionToStringBuilder.toString(this);

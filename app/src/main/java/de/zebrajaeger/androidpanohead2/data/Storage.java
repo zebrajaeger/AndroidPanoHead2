@@ -12,6 +12,7 @@ import java.io.IOException;
 /**
  * @author lars on 09.10.2016.
  */
+@Deprecated
 public class Storage {
  /* private static final Logger LOG = LoggerFactory.getLogger(Storage.class);
   private static final Storage INSTANCE = new Storage();

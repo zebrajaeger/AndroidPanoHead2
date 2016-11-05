@@ -2,12 +2,13 @@ package de.zebrajaeger.androidpanohead2.shot;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author lars on 08.10.2016.
  */
-public class ShooterScript {
+public class ShooterScript implements Serializable{
   private CalculatorData calculationData;
   private List<Shot> shots;
 

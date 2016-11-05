@@ -2,10 +2,12 @@ package de.zebrajaeger.androidpanohead2.util;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
+import java.io.Serializable;
+
 /**
  * @author lars on 23.10.2016.
  */
-public class Bounds2D {
+public class Bounds2D implements Serializable {
   private Bounds1D x;
   private Bounds1D y;
 
@@ -35,6 +37,14 @@ public class Bounds2D {
 
   public boolean isFull() {
     return x != null && x.isFull() && y != null && y.isFull();
+  }
+
+  public boolean hasX() {
+    return x != null;
+  }
+
+  public boolean hasY() {
+    return y != null;
   }
 
   @Override

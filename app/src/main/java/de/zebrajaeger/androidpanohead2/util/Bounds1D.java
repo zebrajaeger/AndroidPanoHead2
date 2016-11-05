@@ -2,11 +2,13 @@ package de.zebrajaeger.androidpanohead2.util;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
+import java.io.Serializable;
+
 /**
  * @author lars on 27.10.2016.
  */
 
-public class Bounds1D {
+public class Bounds1D implements Serializable {
   private float b1;
   private float b2;
 

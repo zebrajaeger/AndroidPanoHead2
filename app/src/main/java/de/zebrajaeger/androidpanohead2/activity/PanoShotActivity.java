@@ -1,12 +1,15 @@
-package de.zebrajaeger.androidpanohead2;
+package de.zebrajaeger.androidpanohead2.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Window;
-import android.view.WindowManager;
 
+import de.zebrajaeger.androidpanohead2.R;
 import de.zebrajaeger.androidpanohead2.shot.ShooterScript;
+import de.zebrajaeger.androidpanohead2.view.PanoShotView;
 
+/**
+ * @author lars
+ */
 public class PanoShotActivity extends AppCompatActivity {
 
   public static final String SHOOTER_SCRIPT = "shooterScript";

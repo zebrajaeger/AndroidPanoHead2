@@ -2,10 +2,12 @@ package de.zebrajaeger.androidpanohead2.shot;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
+import java.io.Serializable;
+
 /**
  * @author lars on 08.10.2016.
  */
-public class Shot {
+public class Shot implements Serializable {
   private float x;
   private float y;
 

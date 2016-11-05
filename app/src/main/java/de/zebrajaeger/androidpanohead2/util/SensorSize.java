@@ -1,4 +1,4 @@
-package de.zebrajaeger.androidpanohead2.data;
+package de.zebrajaeger.androidpanohead2.util;
 
 /**
  * Created by lars on 08.10.2016.

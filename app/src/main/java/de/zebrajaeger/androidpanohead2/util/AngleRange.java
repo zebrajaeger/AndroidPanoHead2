@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by lars on 16.10.2016.
  */
-
+@Deprecated
 public class AngleRange {
   private static final Logger LOG = LoggerFactory.getLogger(AngleRange.class);
 

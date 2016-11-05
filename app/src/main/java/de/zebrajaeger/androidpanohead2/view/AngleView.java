@@ -1,4 +1,4 @@
-package de.zebrajaeger.androidpanohead2;
+package de.zebrajaeger.androidpanohead2.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,7 +14,9 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import de.zebrajaeger.androidpanohead2.R;
 import de.zebrajaeger.androidpanohead2.util.AngleRange;
+import de.zebrajaeger.androidpanohead2.util.Vision1D;
 
 import javax.annotation.Nonnull;
 
@@ -53,7 +55,7 @@ public class AngleView extends View {
   private Paint camInnerPaint;
   private Paint camOuterPaint;
   @Nonnull
-  private AngleRange camRange = test ? AngleRange.ofAngleAndFov(45f, 30f) : AngleRange.newEmpty();
+  private Vision1D camRange = test ? new Vision1D(35f, 15f) : new Vision1D();
   @Nullable
   private Path camFovPath;
 
@@ -61,7 +63,8 @@ public class AngleView extends View {
   private Paint panoInnerPaint;
   private Paint panoOuterPaint;
   @Nonnull
-  private AngleRange panoRange = test ? AngleRange.ofAngleAndFov(90f, 70f) : AngleRange.newEmpty();
+  private Vision1D panoRange = test ? new Vision1D(50f, 45f) : new Vision1D();
+  //private AngleRange panoRange = test ? AngleRange.ofAngleAndFov(90f, 70f) : AngleRange.newEmpty();
   @Nullable
   private Path panoFovPath;
 
@@ -102,7 +105,7 @@ public class AngleView extends View {
     camOuterPaint.setStyle(Paint.Style.STROKE);
     camOuterPaint.setStrokeWidth(1);
     camOuterPaint.setAntiAlias(true);
-    camOuterPaint.setColor(Color.rgb(0,100,0));
+    camOuterPaint.setColor(Color.rgb(0, 100, 0));
     camOuterPaint.setAlpha(200);
 
     // pano
@@ -117,7 +120,7 @@ public class AngleView extends View {
     panoOuterPaint.setStyle(Paint.Style.STROKE);
     panoOuterPaint.setStrokeWidth(1);
     panoOuterPaint.setAntiAlias(true);
-    panoOuterPaint.setColor(Color.rgb(0,0,100));
+    panoOuterPaint.setColor(Color.rgb(0, 0, 100));
     panoOuterPaint.setAlpha(200);
 
     targetPaint = new Paint();
@@ -171,8 +174,9 @@ public class AngleView extends View {
   }
 
   public static boolean isNotEqual(Float f1, Float f2) {
-    return  !isEqual(f1,f2);
+    return !isEqual(f1, f2);
   }
+
   public static boolean isEqual(Float f1, Float f2) {
     if (f1 == f2) {
       return true;
@@ -184,26 +188,27 @@ public class AngleView extends View {
   }
 
   public void setCamFov(float fov) {
-    if (camRange.isComplete() && isEqual(this.camRange.getAngle(), fov)) {
+    if (isNotEqual(this.camRange.getFov(), fov)) {
       camRange.setFov(fov);
       updateCamPath();
       postInvalidate();
     }
   }
 
-  public void setCamAngle(float angle) {
-    if(isNotEqual(this.camRange.getAngle(), angle)){
-      camRange.setAngle(angle);
-      postInvalidate();
-    }
+  public Float getCamFov(){
+    return camRange.getFov();
+  }
 
-    if (camRange.isComplete()) {
+  public void setCamAngle(float angle) {
+    if (isNotEqual(this.camRange.getAngle(), angle)) {
+      camRange.setAngle(angle);
       updateCamPath();
+      postInvalidate();
     }
   }
 
   public void setPanoFov(float fov) {
-    if (panoRange.isComplete() && isEqual(this.panoRange.getAngle(), fov)) {
+    if (isNotEqual(this.panoRange.getFov(), fov)) {
       panoRange.setFov(fov);
       updatePanoPath();
       postInvalidate();
@@ -211,7 +216,7 @@ public class AngleView extends View {
   }
 
   public void setPanoAngle(float angle) {
-    if (panoRange.isComplete() && isEqual(this.panoRange.getAngle(), angle)) {
+    if (isNotEqual(this.panoRange.getAngle(), angle)) {
       panoRange.setAngle(angle);
       updatePanoPath();
       postInvalidate();
@@ -225,7 +230,7 @@ public class AngleView extends View {
 
 
   private void updateCamPath() {
-    if (camRange.isComplete()) {
+    if (scalaBounds!=null && camRange.isComplete()) {
       Path path = new Path();
       path.moveTo(centerX, centerY);
       path.arcTo(scalaBounds, camRange.getA1() - 90, camRange.getFov());
@@ -238,14 +243,13 @@ public class AngleView extends View {
   }
 
   private void updatePanoPath() {
-    if (panoRange.isComplete()) {
-      Path path = new Path();
-      path.moveTo(centerX, centerY);
-      path.arcTo(scalaBounds, panoRange.getA1() - 90, panoRange.getFov());
-      path.close();
-
-      panoFovPath = path;
+    if (scalaBounds!=null && panoRange.isComplete()) {
+      panoFovPath = new Path();
+      panoFovPath.moveTo(centerX, centerY);
+      panoFovPath.arcTo(scalaBounds, panoRange.getA1() - 90, panoRange.getFov());
+      panoFovPath.close();
     } else {
+
       panoFovPath = null;
     }
   }
@@ -326,7 +330,7 @@ public class AngleView extends View {
     }
 
     // draw camera
-    if (camRange.getAngle()!=null) {
+    if (camRange.getAngle() != null) {
       Matrix m = new Matrix();
       canvas.save();
       canvas.rotate(camRange.getAngle(), centerX, centerY);

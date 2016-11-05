@@ -5,10 +5,12 @@ import de.zebrajaeger.androidpanohead2.util.Fov2D;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
+import java.io.Serializable;
+
 /**
- * Created by lars on 23.10.2016.
+ * @author lars on 23.10.2016.
  */
-public class CalculatorData {
+public class CalculatorData implements Serializable {
   private Fov2D camFov;
   private Bounds2D panoBounds;
 
@@ -23,6 +25,14 @@ public class CalculatorData {
 
   public Bounds2D getPanoBounds() {
     return panoBounds;
+  }
+
+  public boolean hasX() {
+    return camFov != null && camFov.hasX() && panoBounds != null && panoBounds.hasX();
+  }
+
+  public boolean hasY() {
+    return camFov != null && camFov.hasY() && panoBounds != null && panoBounds.hasY();
   }
 
   @Override

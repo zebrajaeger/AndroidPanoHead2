@@ -1,8 +1,10 @@
-package de.zebrajaeger.androidpanohead2;
+package de.zebrajaeger.androidpanohead2.activity;
 
 import android.os.Bundle;
 import android.view.View;
 
+import de.zebrajaeger.androidpanohead2.R;
+import de.zebrajaeger.androidpanohead2.view.AngleView;
 import de.zebrajaeger.jgrblconnector.event.GrblStatusEvent;
 
 public class SetPanoRangeActivity extends AbstractCamSetActivity {
@@ -42,15 +44,10 @@ public class SetPanoRangeActivity extends AbstractCamSetActivity {
     trySetPano();
   }
 
-  @Override
-  protected boolean canFinishWithResult() {
-    return (camFov != null && panoBorder1 != null && panoBorder2 != null);
-  }
-
   public void onButtonLeft(View view) {
     GrblStatusEvent lastEvent = getLastEvent();
     if (lastEvent != null) {
-      panoBorder1 = lastEvent.getMpos().getX();
+      panoBorder1 = lastEvent.getMpos().getX() * 360f;
       panoBorder1 += (camFov / 2f);
       trySetPano();
     }
@@ -59,7 +56,7 @@ public class SetPanoRangeActivity extends AbstractCamSetActivity {
   public void onButtonRight(View view) {
     GrblStatusEvent lastEvent = getLastEvent();
     if (lastEvent != null) {
-      panoBorder2 = lastEvent.getMpos().getX();
+      panoBorder2 = lastEvent.getMpos().getX() * 360f;
       panoBorder2 += (camFov / 2f);
       trySetPano();
     }
@@ -70,6 +67,11 @@ public class SetPanoRangeActivity extends AbstractCamSetActivity {
       angleView.setPanoFov(Math.abs(panoBorder2 - panoBorder1));
       angleView.setPanoAngle(Math.abs(panoBorder2 + panoBorder1) / 2f);
     }
+  }
+
+  @Override
+  protected boolean canFinishWithResult() {
+    return (camFov != null && panoBorder1 != null && panoBorder2 != null);
   }
 
   @Override

@@ -7,7 +7,7 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
-                tools:context="de.zebrajaeger.androidpanohead2.SetCamFOVActivity">
+                tools:context="de.zebrajaeger.androidpanohead2.activity.SetCamFOVActivity">
 
     <RelativeLayout
             android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
         />
 
         <view android:id="@+id/cam_view_horizontal"
-              class="de.zebrajaeger.androidpanohead2.AngleView"
+              class="de.zebrajaeger.androidpanohead2.view.AngleView"
               android:layout_height="match_parent"
               android:layout_width="wrap_content"
               android:layout_alignParentTop="true"

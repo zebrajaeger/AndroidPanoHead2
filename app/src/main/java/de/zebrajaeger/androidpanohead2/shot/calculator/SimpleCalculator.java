@@ -11,25 +11,39 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by lars on 23.10.2016.
+ * @author lars on 23.10.2016.
  */
 public class SimpleCalculator implements ShotCalculator {
   @Override
   public ShooterScript createScript(CalculatorData data) {
-    float[] xValues = createValues(data.getCamFov().getX(), data.getPanoBounds().getX());
-    float[] yValues = createValues(data.getCamFov().getY(), data.getPanoBounds().getY());
+    boolean hasX = data.hasX();
+    boolean hasY = data.hasY();
+    float[] xValues = hasX
+        ? createValues(data.getCamFov().getX(), data.getPanoBounds().getX())
+        : null;
+    float[] yValues = data.hasY()
+        ? createValues(data.getCamFov().getY(), data.getPanoBounds().getY())
+        : null;
 
     List<Shot> result = new LinkedList<>();
-    for (float y : yValues) {
+    if (hasX && hasY) {
+      for (float y : yValues) {
+        for (float x : xValues) {
+          result.add(new Shot(x, y));
+        }
+      }
+    } else if (hasX) {
       for (float x : xValues) {
-        Shot shot = new Shot(x, y);
-        result.add(shot);
+        result.add(new Shot(x, 0f));
+      }
+    } else if (hasY) {
+      for (float y : yValues) {
+        result.add(new Shot(y, 0f));
       }
     }
 
     return new ShooterScript(data, result);
   }
-
 
   private float[] createValues(Fov1D camFov, Bounds1D panoRange) {
     return panoRange.isFull()
@@ -63,7 +77,7 @@ public class SimpleCalculator implements ShotCalculator {
     // Partial pano
     // One overlapping area fewer than full round. We remove it from range for a more easy calculation
     float range = panoRange.getSweepAngle() - camFov.getOverlapingAngle();
-    float imgCount = (float) Math.floor(range / camFov.getNonOverlapingAngle());
+    float imgCount = (float) Math.ceil(range / camFov.getNonOverlapingAngle());
     int n = (int) imgCount;
     result = new float[n];
 

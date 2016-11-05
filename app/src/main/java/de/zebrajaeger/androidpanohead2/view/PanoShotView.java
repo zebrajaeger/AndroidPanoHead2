@@ -1,4 +1,4 @@
-package de.zebrajaeger.androidpanohead2;
+package de.zebrajaeger.androidpanohead2.view;
 
 import android.content.Context;
 import android.graphics.Color;

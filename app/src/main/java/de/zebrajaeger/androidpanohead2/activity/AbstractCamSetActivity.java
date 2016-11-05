@@ -1,4 +1,4 @@
-package de.zebrajaeger.androidpanohead2;
+package de.zebrajaeger.androidpanohead2.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,8 +11,10 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+import de.zebrajaeger.androidpanohead2.R;
 import de.zebrajaeger.androidpanohead2.panohead.PanoHead;
 import de.zebrajaeger.androidpanohead2.util.Position;
+import de.zebrajaeger.androidpanohead2.view.AngleView;
 import de.zebrajaeger.jgrblconnector.event.GrblStatusEvent;
 import de.zebrajaeger.jgrblconnector.event.GrblStatusListener;
 

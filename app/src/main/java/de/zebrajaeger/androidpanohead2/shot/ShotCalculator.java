@@ -1,10 +1,5 @@
 package de.zebrajaeger.androidpanohead2.shot;
 
-import de.zebrajaeger.androidpanohead2.data.ShooterData;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author lars on 08.10.2016.
  */

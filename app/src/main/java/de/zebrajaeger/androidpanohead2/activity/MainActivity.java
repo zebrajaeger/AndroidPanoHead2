@@ -1,4 +1,4 @@
-package de.zebrajaeger.androidpanohead2;
+package de.zebrajaeger.androidpanohead2.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -8,8 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import de.zebrajaeger.androidpanohead2.R;
 import de.zebrajaeger.androidpanohead2.panohead.PanoHead;
+import de.zebrajaeger.androidpanohead2.shot.CalculatorData;
 import de.zebrajaeger.androidpanohead2.shot.ShooterScript;
+import de.zebrajaeger.androidpanohead2.shot.ShotCalculator;
+import de.zebrajaeger.androidpanohead2.shot.calculator.SimpleCalculator;
 import de.zebrajaeger.androidpanohead2.storage.AppData;
 import de.zebrajaeger.androidpanohead2.storage.Storage;
 import de.zebrajaeger.androidpanohead2.util.Bounds1D;
@@ -28,9 +32,7 @@ public class MainActivity extends AppCompatActivity {
   private static final Logger LOG = LoggerFactory.getLogger(MainActivity.class);
   public static final int SET_CAM_FOV_REQUEST_CODE = 90;
   public static final int SET_PANO_BOUNDS_REQUEST_CODE = 91;
-  private Float panoBorder1;
-  private Float panoBorder2;
-  private ShooterScript shooterScript;
+  public static final int PANO_SHOT_REQUEST_CODE = 92;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+    btAutoconnect();
   }
 
   @Override
   protected void onStart() {
     super.onStart();
-    btAutoconnect();
   }
 
   @Override
@@ -156,15 +158,17 @@ public class MainActivity extends AppCompatActivity {
       camFov = new Fov2D();
       getAppData().setCamFov(camFov);
     }
+
     Fov1D fovX = camFov.getX();
     if (fovX == null) {
-      fovX = new Fov1D(res.getFloat(SetCamFOVActivity.CAM_FOV));
+    fovX = new Fov1D();
       camFov.setX(fovX);
     }
+
+    fovX.setSweepAngle(res.getFloat(SetCamFOVActivity.CAM_FOV));
     saveAppData();
 
     // TODO activate PanorangeButton
-    tryCalculateShooterScript();
   }
 
   public void onSetPanoRange(View v) {
@@ -204,25 +208,17 @@ public class MainActivity extends AppCompatActivity {
     boundsX.setB1(res.getFloat(SetPanoRangeActivity.PANO_BORDER_1));
     boundsX.setB2(res.getFloat(SetPanoRangeActivity.PANO_BORDER_2));
 
-    tryCalculateShooterScript();
+    saveAppData();
   }
 
   public void onBtnShot(View v) {
     Intent intent = new Intent(this, PanoShotActivity.class);
-    intent.putExtra("imgCountX", 5);
-    intent.putExtra("imgCountY", 1);
-    startActivityForResult(intent, 92);
-  }
 
-  private void tryCalculateShooterScript() {
-    //shooterScript = new ShooterScript();
-
-
-    if (shooterScript != null) {
-      // TODO activate Shoot Button
-    } else {
-      // TODO deactivate Shoot Button
-    }
+    CalculatorData cd = new CalculatorData(getAppData().getCamFov(), getAppData().getPanoBounds());
+    ShotCalculator  calc = new SimpleCalculator();
+    ShooterScript script = calc.createScript(cd);
+    intent.putExtra(PanoShotActivity.SHOOTER_SCRIPT, script);
+    startActivityForResult(intent, PANO_SHOT_REQUEST_CODE);
   }
 
   private AppData getAppData() {

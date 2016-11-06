@@ -17,16 +17,9 @@ public class CalculatorData implements Serializable {
   private Bounds2D panoBounds;
 
   public CalculatorData(Fov2D camFov, Overlap overlap, Bounds2D panoBounds) {
-
-    this.camFov = new FovO2D();
+    this.camFov = new FovO2D(camFov, overlap);
     this.panoBounds = panoBounds;
   }
-  /*
-  public CalculatorData(FovO2D camFov, Bounds2D panoBounds) {
-    this.camFov = camFov;
-    this.panoBounds = panoBounds;
-  }
-  */
 
   public FovO2D getCamFov() {
     return camFov;

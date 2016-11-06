@@ -8,14 +8,15 @@ import android.widget.EditText;
 
 import de.zebrajaeger.androidpanohead2.R;
 import de.zebrajaeger.androidpanohead2.util.Overlap;
-import de.zebrajaeger.androidpanohead2.util.PercentWatcher;
+import de.zebrajaeger.androidpanohead2.util.TextEditPercentWrapper;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 public class CommonSettingsActivity extends AppCompatActivity {
   public static final String OVERLAP = "overlap";
 
-  private Overlap overlap = new Overlap(0f, 0f);
+  private TextEditPercentWrapper pwX;
+  private TextEditPercentWrapper pwY;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +27,9 @@ public class CommonSettingsActivity extends AppCompatActivity {
     setContentView(R.layout.activity_common_settings);
 
     EditText editX = (EditText) findViewById(R.id.edit_overlap_X);
-    PercentWatcher.of(editX);
+    pwX = TextEditPercentWrapper.of(editX);
     EditText editY = (EditText) findViewById(R.id.edit_overlap_y);
-    PercentWatcher.of(editY);
+    pwY = TextEditPercentWrapper.of(editY);
   }
 
   @Override
@@ -36,16 +37,21 @@ public class CommonSettingsActivity extends AppCompatActivity {
     super.onStart();
     Bundle extras = getIntent().getExtras();
     if (extras.containsKey(OVERLAP)) {
-      overlap = (Overlap) extras.get(OVERLAP);
+      Overlap overlap = (Overlap) extras.get(OVERLAP);
+      pwX.setValue(overlap.getX());
+      pwY.setValue(overlap.getY());
     }
   }
 
   @Override
   public void onBackPressed() {
-    if (overlap.isInRange()) {
+
+    Float x = pwX.getValueAsFloat();
+    Float y = pwY.getValueAsFloat();
+    if (x != null && y != null) {
       Bundle conData = new Bundle();
 
-      conData.putSerializable(OVERLAP, overlap);
+      conData.putSerializable(OVERLAP, new Overlap(x,y));
 
       Intent intent = new Intent();
       intent.putExtras(conData);
@@ -60,24 +66,24 @@ public class CommonSettingsActivity extends AppCompatActivity {
   }
 
   public void onSetOverlap20(View v) {
-    setOverlap(20f);
+    setOverlap(20);
   }
 
   public void onSetOverlap25(View v) {
-    setOverlap(25f);
+    setOverlap(25);
   }
 
   public void onSetOverlap33(View v) {
-    setOverlap(33f);
+    setOverlap(33);
   }
 
   public void onSetOverlap50(View v) {
-    setOverlap(50f);
+    setOverlap(50);
   }
 
-  private void setOverlap(Float value) {
-    overlap.setX(value);
-    overlap.setY(value);
+  private void setOverlap(Integer value) {
+    pwX.setValue(value);
+    pwY.setValue(value);
   }
 
   @Override

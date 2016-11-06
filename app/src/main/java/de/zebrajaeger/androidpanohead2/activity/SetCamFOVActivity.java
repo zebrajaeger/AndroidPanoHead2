@@ -16,6 +16,9 @@ public class SetCamFOVActivity extends AbstractCamSetActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    if (getSupportActionBar() != null) {
+      getSupportActionBar().hide();
+    }
     setContentView(R.layout.activity_set_cam_fov);
   }
 

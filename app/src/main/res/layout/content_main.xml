@@ -12,40 +12,41 @@
     tools:context="de.zebrajaeger.androidpanohead2.activity.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/textView" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select Device"
-        android:id="@+id/select_device_button"
-        android:layout_below="@+id/textView"
-        android:onClick="buttonBtSelectDeviceOnClick"
-        android:layout_alignParentLeft="true" />
-
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Set Image Bounds"
             android:id="@+id/button_set_image_bounds"
-            android:layout_below="@+id/select_device_button"
-            android:layout_alignRight="@+id/select_device_button"
-            android:layout_alignParentLeft="true"
-            android:onClick="onSetCamFov"/>
+            android:onClick="onSetCamFov"
+            android:layout_alignParentTop="true" android:layout_alignParentRight="true"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Set Pano Bounds"
             android:id="@+id/button_set_pano_bounds"
-            android:layout_below="@+id/button_set_image_bounds" android:layout_alignParentLeft="true"
-            android:layout_alignRight="@+id/button_set_image_bounds" android:onClick="onSetPanoRange"/>
+            android:onClick="onSetPanoRange"
+            android:layout_below="@+id/button_set_image_bounds" android:layout_alignParentRight="true"
+            android:layout_alignLeft="@+id/button_set_image_bounds"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Device"
+            android:id="@+id/select_device_button"
+            android:onClick="buttonBtSelectDeviceOnClick"
+            android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
+            android:layout_alignRight="@+id/common_settings_button"/>
+    <Button
+            android:text="Common Settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/common_settings_button"
+            android:elevation="24dp" android:onClick="onCommonSettings"
+            android:layout_below="@+id/select_device_button" android:layout_alignParentLeft="true"/>
     <Button
             android:text="Shot"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_below="@+id/button_set_pano_bounds" android:layout_alignParentLeft="true"
-            android:id="@+id/button_shot" android:layout_alignRight="@+id/button_set_pano_bounds" android:onClick="onBtnShot"/>
+            android:layout_height="wrap_content"
+            android:id="@+id/button_shot" android:onClick="onBtnShot"
+            android:layout_below="@+id/button_set_pano_bounds" android:layout_alignParentLeft="true" android:layout_marginTop="28dp"
+            android:layout_alignParentRight="true" style="@style/Widget.AppCompat.Button.Colored"/>
 </RelativeLayout>

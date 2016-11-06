@@ -5,7 +5,7 @@ import de.zebrajaeger.androidpanohead2.shot.ShooterScript;
 import de.zebrajaeger.androidpanohead2.shot.Shot;
 import de.zebrajaeger.androidpanohead2.shot.ShotCalculator;
 import de.zebrajaeger.androidpanohead2.util.Bounds1D;
-import de.zebrajaeger.androidpanohead2.util.Fov1D;
+import de.zebrajaeger.androidpanohead2.util.FovO1D;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -45,13 +45,13 @@ public class SimpleCalculator implements ShotCalculator {
     return new ShooterScript(data, result);
   }
 
-  private float[] createValues(Fov1D camFov, Bounds1D panoRange) {
+  private float[] createValues(FovO1D camFov, Bounds1D panoRange) {
     return panoRange.isFull()
         ? createValuesFull(camFov, panoRange)
         : createValuesPartial(camFov, panoRange);
   }
 
-  private float[] createValuesFull(Fov1D camFov, Bounds1D panoRange) {
+  private float[] createValuesFull(FovO1D camFov, Bounds1D panoRange) {
     float[] result;
     // Full circle pano. Set range to 360 to prevent a range > 360 degree
     float imgCount = (float) Math.floor(360f / camFov.getNonOverlapingAngle());
@@ -71,7 +71,7 @@ public class SimpleCalculator implements ShotCalculator {
     return result;
   }
 
-  private float[] createValuesPartial(Fov1D camFov, Bounds1D panoRange) {
+  private float[] createValuesPartial(FovO1D camFov, Bounds1D panoRange) {
     float[] result;
 
     // Partial pano

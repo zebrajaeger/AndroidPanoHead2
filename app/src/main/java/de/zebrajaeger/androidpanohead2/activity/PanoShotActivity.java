@@ -13,12 +13,13 @@ import de.zebrajaeger.androidpanohead2.view.PanoShotView;
 public class PanoShotActivity extends AppCompatActivity {
 
   public static final String SHOOTER_SCRIPT = "shooterScript";
-  private ShooterScript shooterScript;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    getSupportActionBar().hide();
+    if (getSupportActionBar() != null) {
+      getSupportActionBar().hide();
+    }
     setContentView(R.layout.activity_pano_shot);
   }
 
@@ -29,7 +30,7 @@ public class PanoShotActivity extends AppCompatActivity {
 
     Bundle extras = getIntent().getExtras();
     if (extras.containsKey(SHOOTER_SCRIPT)) {
-      shooterScript = (ShooterScript) extras.get(SHOOTER_SCRIPT);
+      ShooterScript shooterScript = (ShooterScript) extras.get(SHOOTER_SCRIPT);
       shotView.setScript(shooterScript);
     }
   }

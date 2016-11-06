@@ -19,6 +19,9 @@ public class SetPanoRangeActivity extends AbstractCamSetActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    if (getSupportActionBar() != null) {
+      getSupportActionBar().hide();
+    }
     setContentView(R.layout.activity_set_pano_range);
   }
 

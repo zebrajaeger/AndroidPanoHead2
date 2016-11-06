@@ -2,6 +2,7 @@ package de.zebrajaeger.androidpanohead2.storage;
 
 import de.zebrajaeger.androidpanohead2.util.Bounds2D;
 import de.zebrajaeger.androidpanohead2.util.Fov2D;
+import de.zebrajaeger.androidpanohead2.util.Overlap;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
@@ -14,6 +15,7 @@ public class AppData {
   private String btAdapter;
   private Fov2D camFov;
   private Bounds2D panoBounds;
+  private Overlap overlap;
 
   public AppData() {
   }
@@ -40,6 +42,14 @@ public class AppData {
 
   public void setPanoBounds(Bounds2D panoBounds) {
     this.panoBounds = panoBounds;
+  }
+
+  public Overlap getOverlap() {
+    return overlap;
+  }
+
+  public void setOverlap(Overlap overlap) {
+    this.overlap = overlap;
   }
 
   @Override

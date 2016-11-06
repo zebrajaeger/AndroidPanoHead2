@@ -21,18 +21,16 @@ import de.zebrajaeger.androidpanohead2.util.Bounds2D;
 import de.zebrajaeger.androidpanohead2.util.FinalInt;
 import de.zebrajaeger.androidpanohead2.util.Fov1D;
 import de.zebrajaeger.androidpanohead2.util.Fov2D;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import de.zebrajaeger.androidpanohead2.util.Overlap;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-  private static final Logger LOG = LoggerFactory.getLogger(MainActivity.class);
   public static final int SET_CAM_FOV_REQUEST_CODE = 90;
   public static final int SET_PANO_BOUNDS_REQUEST_CODE = 91;
   public static final int PANO_SHOT_REQUEST_CODE = 92;
+  public static final int COMMON_SETTINGS = 93;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +55,16 @@ public class MainActivity extends AppCompatActivity {
           onSetCamFovResult(data.getExtras());
         }
         break;
+
       case SET_PANO_BOUNDS_REQUEST_CODE:
         if (resultCode == RESULT_OK && data != null) {
           onSetPanoRangeResult(data.getExtras());
+        }
+        break;
+
+      case COMMON_SETTINGS:
+        if (resultCode == RESULT_OK && data != null) {
+          onCommonSettingsResult(data.getExtras());
         }
         break;
     }
@@ -103,9 +108,9 @@ public class MainActivity extends AppCompatActivity {
           Storage.getInstance().getAppData(getApplicationContext()).setBtAdapter(name);
           Storage.getInstance().save(getApplicationContext());
 
-          if (PanoHead.instance().setCurrentDevice(name)) {
-            // TODO activate CamFocButton
-          }
+          //if (PanoHead.instance().setCurrentDevice(name)) {
+          // TODO activate CamFocButton
+          //}
         }
       });
       builder.setNegativeButton("Cancel", null);
@@ -118,34 +123,48 @@ public class MainActivity extends AppCompatActivity {
     alertDialog.show();
   }
 
-/*
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.menu_main, menu);
-    //new GrblCore(null);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
-    int id = item.getItemId();
-
-    //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
+  /*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+      // Inflate the menu; this adds items to the action bar if it is present.
+      getMenuInflater().inflate(R.menu.menu_main, menu);
+      //new GrblCore(null);
       return true;
     }
 
-    return super.onOptionsItemSelected(item);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+      // Handle action bar item clicks here. The action bar will
+      // automatically handle clicks on the Home/Up button, so long
+      // as you specify a parent activity in AndroidManifest.xml.
+      int id = item.getItemId();
+
+      //noinspection SimplifiableIfStatement
+      if (id == R.id.action_settings) {
+        return true;
+      }
+
+      return super.onOptionsItemSelected(item);
+    }
+    */
+  public void onCommonSettings(View v) {
+
+    Intent intent = new Intent(this, CommonSettingsActivity.class);
+
+    Overlap overlap = getAppData().getOverlap();
+    intent.putExtra(CommonSettingsActivity.OVERLAP, (overlap == null) ? new Overlap() : overlap);
+
+    startActivityForResult(intent, COMMON_SETTINGS);
   }
-  */
+
+  public void onCommonSettingsResult(Bundle res) {
+    getAppData().setOverlap((Overlap) res.get(CommonSettingsActivity.OVERLAP));
+    saveAppData();
+  }
 
   public void onSetCamFov(View v) {
     Intent intent = new Intent(this, SetCamFOVActivity.class);
-    Fov2D camFov = Storage.getInstance().getAppData(getApplicationContext()).getCamFov();
+    Fov2D camFov = getAppData().getCamFov();
     if (camFov != null) {
       intent.putExtra(SetCamFOVActivity.CAM_FOV, camFov.getX().getSweepAngle());
     }
@@ -161,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
     Fov1D fovX = camFov.getX();
     if (fovX == null) {
-    fovX = new Fov1D();
+      fovX = new Fov1D();
       camFov.setX(fovX);
     }
 
@@ -189,18 +208,18 @@ public class MainActivity extends AppCompatActivity {
   }
 
   public void onSetPanoRangeResult(Bundle res) {
-    if(!res.containsKey(SetPanoRangeActivity.PANO_BORDER_1)||!res.containsKey(SetPanoRangeActivity.PANO_BORDER_2)){
+    if (!res.containsKey(SetPanoRangeActivity.PANO_BORDER_1) || !res.containsKey(SetPanoRangeActivity.PANO_BORDER_2)) {
       throw new IllegalArgumentException("one or both borders missing");
     }
 
     Bounds2D panoBounds = getAppData().getPanoBounds();
-    if(panoBounds==null){
-      panoBounds  = new Bounds2D();
+    if (panoBounds == null) {
+      panoBounds = new Bounds2D();
       getAppData().setPanoBounds(panoBounds);
     }
 
     Bounds1D boundsX = panoBounds.getX();
-    if(boundsX==null){
+    if (boundsX == null) {
       boundsX = new Bounds1D();
       panoBounds.setX(boundsX);
     }
@@ -214,8 +233,8 @@ public class MainActivity extends AppCompatActivity {
   public void onBtnShot(View v) {
     Intent intent = new Intent(this, PanoShotActivity.class);
 
-    CalculatorData cd = new CalculatorData(getAppData().getCamFov(), getAppData().getPanoBounds());
-    ShotCalculator  calc = new SimpleCalculator();
+    CalculatorData cd = new CalculatorData(getAppData().getCamFov(), getAppData().getOverlap(), getAppData().getPanoBounds());
+    ShotCalculator calc = new SimpleCalculator();
     ShooterScript script = calc.createScript(cd);
     intent.putExtra(PanoShotActivity.SHOOTER_SCRIPT, script);
     startActivityForResult(intent, PANO_SHOT_REQUEST_CODE);

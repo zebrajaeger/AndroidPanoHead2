@@ -18,6 +18,7 @@ import de.zebrajaeger.androidpanohead2.view.AngleView;
 import de.zebrajaeger.jgrblconnector.event.GrblStatusEvent;
 import de.zebrajaeger.jgrblconnector.event.GrblStatusListener;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,6 @@ public abstract class AbstractCamSetActivity extends AppCompatActivity implement
   @Override
   protected void onStart() {
     super.onStart();
-    //Storage.initAndLoadSilently(getApplicationContext());
     if (getSupportActionBar() != null) {
       getSupportActionBar().hide();
     }
@@ -311,4 +311,10 @@ public abstract class AbstractCamSetActivity extends AppCompatActivity implement
     setResult(RESULT_CANCELED, intent);
     finish();
   }
+
+  @Override
+  public String toString() {
+    return ReflectionToStringBuilder.toString(this);
+  }
+
 }

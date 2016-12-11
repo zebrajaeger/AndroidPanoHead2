@@ -2,14 +2,14 @@ package de.zebrajaeger.androidpanohead2.panohead;
 
 import android.bluetooth.BluetoothSocket;
 
+import de.zebrajaeger.jgrblconnector.serial.SerialConnectionAdapter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import de.zebrajaeger.jgrblconnector.serial.SerialConnectionAdapter;
 
 /**
  * Created by lars on 18.09.2016.

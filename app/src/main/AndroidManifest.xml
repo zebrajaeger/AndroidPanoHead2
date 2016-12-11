@@ -28,13 +28,10 @@
             </intent-filter>
         </receiver>
         -->
-        <activity android:name=".activity.SetCamFOVActivity"/>
-        <activity android:name=".activity.PanoShotActivity">
-        </activity>
-        <activity android:name=".activity.SetPanoRangeActivity">
-        </activity>
-        <activity android:name=".activity.CommonSettingsActivity">
-        </activity>
+        <activity android:name=".activity.SetCamFOVActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.PanoShotActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.SetPanoRangeActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.CommonSettingsActivity" android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

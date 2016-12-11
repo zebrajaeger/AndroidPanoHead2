@@ -19,10 +19,10 @@ public class SimpleCalculator implements ShotCalculator {
     boolean hasX = data.hasX();
     boolean hasY = data.hasY();
     float[] xValues = hasX
-        ? createValues(data.getCamFov().getX(), data.getPanoBounds().getX())
+        ? createValuesX(data.getCamFov().getX(), data.getPanoBounds().getX() )
         : null;
     float[] yValues = data.hasY()
-        ? createValues(data.getCamFov().getY(), data.getPanoBounds().getY())
+        ? createValuesY(data.getCamFov().getY(), data.getPanoBounds().getY())
         : null;
 
     List<Shot> result = new LinkedList<>();
@@ -45,8 +45,14 @@ public class SimpleCalculator implements ShotCalculator {
     return new ShooterScript(data, result);
   }
 
-  private float[] createValues(FovO1D camFov, Bounds1D panoRange) {
-    return panoRange.isFull()
+  private float[] createValuesX(FovO1D camFov, Bounds1D panoRange) {
+    return panoRange.getSweepAngle()==360f
+        ? createValuesFull(camFov, panoRange)
+        : createValuesPartial(camFov, panoRange);
+  }
+
+  private float[] createValuesY(FovO1D camFov, Bounds1D panoRange) {
+    return panoRange.getSweepAngle()==180f
         ? createValuesFull(camFov, panoRange)
         : createValuesPartial(camFov, panoRange);
   }
@@ -54,7 +60,7 @@ public class SimpleCalculator implements ShotCalculator {
   private float[] createValuesFull(FovO1D camFov, Bounds1D panoRange) {
     float[] result;
     // Full circle pano. Set range to 360 to prevent a range > 360 degree
-    float imgCount = (float) Math.floor(360f / camFov.getNonOverlapingAngle());
+    float imgCount = (float) Math.floor(panoRange.getSweepAngle() / camFov.getNonOverlapingAngle());
     int n = (int) imgCount;
     result = new float[n];
 
@@ -64,8 +70,12 @@ public class SimpleCalculator implements ShotCalculator {
       result[0] = panoRange.getCenter();
     } else {
       // Multible images -> start at zero
+      float imgSize = panoRange.getSweepAngle() / imgCount;
+      float off = imgSize / 2f;
       for (int i = 0; i < n; ++i) {
-        result[i] = (float) i * 360f / imgCount;
+        result[i] = i;
+        result[i] *= imgSize ;
+        result[i] += off ;
       }
     }
     return result;

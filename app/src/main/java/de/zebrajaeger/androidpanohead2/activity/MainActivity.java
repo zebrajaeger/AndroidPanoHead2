@@ -234,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
     Intent intent = new Intent(this, PanoShotActivity.class);
 
     CalculatorData cd = new CalculatorData(getAppData().getCamFov(), getAppData().getOverlap(), getAppData().getPanoBounds());
+    //CalculatorData cd = new CalculatorData(new Fov2D(20f,30f), new Overlap(0.25f,0.25f), new Bounds2D(0f,360f,0f,180f));
     ShotCalculator calc = new SimpleCalculator();
     ShooterScript script = calc.createScript(cd);
     intent.putExtra(PanoShotActivity.SHOOTER_SCRIPT, script);

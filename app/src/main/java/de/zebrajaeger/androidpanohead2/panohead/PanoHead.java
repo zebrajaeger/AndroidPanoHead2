@@ -59,8 +59,10 @@ public class PanoHead {
 
   public void refreshDeviceList() {
     devices = new HashMap<>();
-    for (BluetoothDevice d : bta.getBondedDevices()) {
-      devices.put(createUniqueName(d), d);
+    if(bta!=null) {
+      for (BluetoothDevice d : bta.getBondedDevices()) {
+        devices.put(createUniqueName(d), d);
+      }
     }
   }
 

@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -18,13 +19,9 @@ import de.zebrajaeger.androidpanohead2.R;
 import de.zebrajaeger.androidpanohead2.util.AngleRange;
 import de.zebrajaeger.androidpanohead2.util.Vision1D;
 
-import javax.annotation.Nonnull;
-
-
 /**
  * Created by lars on 09.10.2016.
  */
-
 public class AngleView extends View {
   boolean test = false;
 
@@ -37,11 +34,11 @@ public class AngleView extends View {
   private float radius;
 
   // scala
-  @Nonnull
+  @NonNull
   private AngleRange scalaRange = AngleRange.ofTwoAngles(0f, 360f);
-  @Nonnull
+  @NonNull
   private Paint scalaPaint;
-  @Nonnull
+  @NonNull
   private RectF scalaBounds;
 
   // target
@@ -54,7 +51,7 @@ public class AngleView extends View {
   private Bitmap camIScaledImg;
   private Paint camInnerPaint;
   private Paint camOuterPaint;
-  @Nonnull
+  @NonNull
   private Vision1D camRange = test ? new Vision1D(35f, 15f) : new Vision1D();
   @Nullable
   private Path camFovPath;
@@ -62,7 +59,7 @@ public class AngleView extends View {
   // pano
   private Paint panoInnerPaint;
   private Paint panoOuterPaint;
-  @Nonnull
+  @NonNull
   private Vision1D panoRange = test ? new Vision1D(50f, 45f) : new Vision1D();
   //private AngleRange panoRange = test ? AngleRange.ofAngleAndFov(90f, 70f) : AngleRange.newEmpty();
   @Nullable
@@ -195,7 +192,7 @@ public class AngleView extends View {
     }
   }
 
-  public Float getCamFov(){
+  public Float getCamFov() {
     return camRange.getFov();
   }
 
@@ -230,7 +227,7 @@ public class AngleView extends View {
 
 
   private void updateCamPath() {
-    if (scalaBounds!=null && camRange.isComplete()) {
+    if (scalaBounds != null && camRange.isComplete()) {
       Path path = new Path();
       path.moveTo(centerX, centerY);
       path.arcTo(scalaBounds, camRange.getA1() - 90, camRange.getFov());
@@ -243,7 +240,7 @@ public class AngleView extends View {
   }
 
   private void updatePanoPath() {
-    if (scalaBounds!=null && panoRange.isComplete()) {
+    if (scalaBounds != null && panoRange.isComplete()) {
       panoFovPath = new Path();
       panoFovPath.moveTo(centerX, centerY);
       panoFovPath.arcTo(scalaBounds, panoRange.getA1() - 90, panoRange.getFov());

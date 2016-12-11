@@ -31,17 +31,19 @@ public class SetPanoRangeActivity extends AbstractCamSetActivity {
     angleView = (AngleView) findViewById(R.id.cam_view_horizontal);
     Bundle extras = getIntent().getExtras();
 
-    if (extras.containsKey(CAM_FOV)) {
-      camFov = extras.getFloat(CAM_FOV);
-      angleView.setCamFov(camFov);
-    }
+    if(extras!=null) {
+      if (extras.containsKey(CAM_FOV)) {
+        camFov = extras.getFloat(CAM_FOV);
+        angleView.setCamFov(camFov);
+      }
 
-    if (extras.containsKey(PANO_BORDER_1)) {
-      panoBorder1 = extras.getFloat(PANO_BORDER_1);
-    }
+      if (extras.containsKey(PANO_BORDER_1)) {
+        panoBorder1 = extras.getFloat(PANO_BORDER_1);
+      }
 
-    if (extras.containsKey(PANO_BORDER_2)) {
-      panoBorder2 = extras.getFloat(PANO_BORDER_2);
+      if (extras.containsKey(PANO_BORDER_2)) {
+        panoBorder2 = extras.getFloat(PANO_BORDER_2);
+      }
     }
 
     trySetPano();

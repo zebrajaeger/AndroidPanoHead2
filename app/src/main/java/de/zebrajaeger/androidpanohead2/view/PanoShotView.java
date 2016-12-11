@@ -76,7 +76,7 @@ public class PanoShotView extends View {
     //WORLD_RECT_PAINT.setStrokeWidth(1);
     //WORLD_RECT_PAINT.setAntiAlias(true);
     //WORLD_RECT_PAINT.setColor(Color.GRAY);
-    WORLD_RECT_PAINT.setColor(Color.RED);
+    WORLD_RECT_PAINT.setColor(Color.GRAY);
     WORLD_RECT_PAINT.setAlpha(150);
 
     WORLD_BORDER_PAINT.setStyle(Paint.Style.STROKE);

@@ -235,31 +235,33 @@ public class PanoShotView extends View {
     RectF worldRect = createWorldRect();
     drawWorld(canvas, worldRect);
 
-    Size2D imageSize = createImageSize(worldRect, script.getCalculationData());
+    if(script!=null) {
+      Size2D imageSize = createImageSize(worldRect, script.getCalculationData());
 
-    int index = 0;
-    RectF currentRect = null;
-    for (Shot s : script.getShots()) {
-      float relX = s.getX() / 360f;
-      float relY = s.getY() / 180f;
-      float iX = (relX * worldRect.width()) + worldRect.left;
-      float iY = (relY * worldRect.height()) + worldRect.top;
-      RectF imageRect = createImageRect(iX, iY, imageSize);
+      int index = 0;
+      RectF currentRect = null;
+      for (Shot s : script.getShots()) {
+        float relX = s.getX() / 360f;
+        float relY = s.getY() / 180f;
+        float iX = (relX * worldRect.width()) + worldRect.left;
+        float iY = (relY * worldRect.height()) + worldRect.top;
+        RectF imageRect = createImageRect(iX, iY, imageSize);
 
-      if(index<currentImage){
-        drawImage(canvas, Integer.toString(index+1), imageRect, ImageType.SHOOTED);
-      } if(index>currentImage){
-        drawImage(canvas, Integer.toString(index+1), imageRect, ImageType.WAITING);
-      }else{
-        currentRect = imageRect;
+        if (index < currentImage) {
+          drawImage(canvas, Integer.toString(index + 1), imageRect, ImageType.SHOOTED);
+        }
+        if (index > currentImage) {
+          drawImage(canvas, Integer.toString(index + 1), imageRect, ImageType.WAITING);
+        } else {
+          currentRect = imageRect;
+        }
+        ++index;
       }
-      ++index;
-    }
 
-    if(currentRect!=null){
-      drawImage(canvas, Integer.toString(currentImage + 1), currentRect, ImageType.CURRENT);
+      if (currentRect != null) {
+        drawImage(canvas, Integer.toString(currentImage + 1), currentRect, ImageType.CURRENT);
+      }
     }
-
     //drawImage(canvas, "Moin moin!", w / 2f, h / 2f);
   }
 

@@ -11,10 +11,11 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import de.zebrajaeger.androidpanohead2.shot.CalculatorData;
-import de.zebrajaeger.androidpanohead2.shot.ShooterScript;
-import de.zebrajaeger.androidpanohead2.shot.Shot;
+import de.zebrajaeger.androidpanohead2.shot.ShotPosition;
+import de.zebrajaeger.androidpanohead2.shot.shooter.ShooterScript;
 import de.zebrajaeger.androidpanohead2.util.FovO2D;
 import de.zebrajaeger.androidpanohead2.util.Size2D;
+import de.zebrajaeger.jgrblconnector.common.Position;
 
 /**
  * @author lars on 21.10.2016.
@@ -24,20 +25,10 @@ public class PanoShotView extends View {
   private int h;
   private int currentImage = 31;
 
-  //@Nullable
-  // private Path imgPath;
-/*
-  private int imgCountX = 1;
-  private int imgCountY = 1;
-*/
-
-  // aspect of sensor.
-  //private float aspect = 4f / 3f;
   private Paint imgPaint;
   private ShooterScript script;
   public static final Paint WORLD_RECT_PAINT = new Paint();
   public static final Paint WORLD_BORDER_PAINT = new Paint();
-
 
   public static final Paint IMAGE_SHOOTED_FILL_PAINT = new Paint();
   public static final Paint IMAGE_SHOOTED_BORDER_PAINT = new Paint();
@@ -48,6 +39,7 @@ public class PanoShotView extends View {
   public static final Paint IMAGE_WAITING_FILL_PAINT = new Paint();
   public static final Paint IMAGE_WAITING_BORDER_PAINT = new Paint();
   public static final Paint IMAGE_WAITING_LABEL_PAINT = new Paint();
+  private Position camPos;
 
   public PanoShotView(Context context) {
     super(context);
@@ -240,7 +232,7 @@ public class PanoShotView extends View {
 
       int index = 0;
       RectF currentRect = null;
-      for (Shot s : script.getShots()) {
+      for (ShotPosition s : script.getShots()) {
         float relX = s.getX() / 360f;
         float relY = s.getY() / 180f;
         float iX = (relX * worldRect.width()) + worldRect.left;
@@ -262,13 +254,21 @@ public class PanoShotView extends View {
         drawImage(canvas, Integer.toString(currentImage + 1), currentRect, ImageType.CURRENT);
       }
     }
-    //drawImage(canvas, "Moin moin!", w / 2f, h / 2f);
   }
 
   public void setScript(ShooterScript script) {
     this.script = script;
   }
-  
+
+  public void setCurrentImage(int currentImage) {
+    this.currentImage = currentImage;
+    postInvalidate();
+  }
+
+  public void setCamPosition(Position camPos){
+    this.camPos = camPos;
+  }
+
   enum ImageType{
     SHOOTED, CURRENT, WAITING
   }

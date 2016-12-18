@@ -1,9 +1,9 @@
 package de.zebrajaeger.androidpanohead2.shot.calculator;
 
 import de.zebrajaeger.androidpanohead2.shot.CalculatorData;
-import de.zebrajaeger.androidpanohead2.shot.ShooterScript;
-import de.zebrajaeger.androidpanohead2.shot.Shot;
 import de.zebrajaeger.androidpanohead2.shot.ShotCalculator;
+import de.zebrajaeger.androidpanohead2.shot.ShotPosition;
+import de.zebrajaeger.androidpanohead2.shot.shooter.ShooterScript;
 import de.zebrajaeger.androidpanohead2.util.Bounds1D;
 import de.zebrajaeger.androidpanohead2.util.FovO1D;
 
@@ -25,20 +25,20 @@ public class SimpleCalculator implements ShotCalculator {
         ? createValuesY(data.getCamFov().getY(), data.getPanoBounds().getY())
         : null;
 
-    List<Shot> result = new LinkedList<>();
+    List<ShotPosition> result = new LinkedList<>();
     if (hasX && hasY) {
       for (float y : yValues) {
         for (float x : xValues) {
-          result.add(new Shot(x, y));
+          result.add(new ShotPosition(x, y));
         }
       }
     } else if (hasX) {
       for (float x : xValues) {
-        result.add(new Shot(x, 0f));
+        result.add(new ShotPosition(x, 0f));
       }
     } else if (hasY) {
       for (float y : yValues) {
-        result.add(new Shot(y, 0f));
+        result.add(new ShotPosition(y, 0f));
       }
     }
 

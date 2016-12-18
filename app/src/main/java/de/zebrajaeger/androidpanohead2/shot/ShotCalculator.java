@@ -1,5 +1,7 @@
 package de.zebrajaeger.androidpanohead2.shot;
 
+import de.zebrajaeger.androidpanohead2.shot.shooter.ShooterScript;
+
 /**
  * @author lars on 08.10.2016.
  */
@@ -22,34 +24,34 @@ public interface ShotCalculator {
     return (int) Math.ceil(x / imgSize);
   }
 
-  public List<Shot> createRowShots(double y) {
+  public List<ShotPosition> createRowShots(double y) {
     double[] positions = computePositions(
         shooterData.getPanoWidthStartAngle(),
         shooterData.getPanoWidth(),
         shooterData.getImgWidth(),
         shooterData.getOverlapWidth());
-    List<Shot> shots = new ArrayList<>(positions.length);
+    List<ShotPosition> shots = new ArrayList<>(positions.length);
     for (double pos : positions) {
-      shots.add(new Shot(pos, y));
+      shots.add(new ShotPosition(pos, y));
     }
     return shots;
   }
 
-  public List<Shot> createColumnShots(double x) {
+  public List<ShotPosition> createColumnShots(double x) {
     double[] positions = computePositions(
         shooterData.getPanoHeightStartAngle(),
         shooterData.getPanoHeight(),
         shooterData.getImgHeigth(),
         shooterData.getOverlapHeight());
 
-    List<Shot> shots = new ArrayList<>(positions.length);
+    List<ShotPosition> shots = new ArrayList<>(positions.length);
     for (double pos : positions) {
-      shots.add(new Shot(x, pos));
+      shots.add(new ShotPosition(x, pos));
     }
     return shots;
   }
 
-  public List<Shot> createSimpleGridShots() {
+  public List<ShotPosition> createSimpleGridShots() {
     double[] positionsX = computePositions(
         shooterData.getPanoWidthStartAngle(),
         shooterData.getPanoWidth(),
@@ -61,10 +63,10 @@ public interface ShotCalculator {
         shooterData.getPanoHeight(),
         shooterData.getImgHeigth(),
         shooterData.getOverlapHeight());
-    List<Shot> shots = new ArrayList<>(positionsX.length * positionsY.length);
+    List<ShotPosition> shots = new ArrayList<>(positionsX.length * positionsY.length);
     for (int iY = 0; iY < positionsY.length; ++iY) {
       for (int iX = 0; iX < positionsX.length; ++iX) {
-        shots.add(new Shot(positionsX[iX], positionsY[iY]));
+        shots.add(new ShotPosition(positionsX[iX], positionsY[iY]));
       }
     }
     return shots;

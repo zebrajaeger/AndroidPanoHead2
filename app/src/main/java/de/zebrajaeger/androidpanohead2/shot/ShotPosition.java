@@ -7,11 +7,11 @@ import java.io.Serializable;
 /**
  * @author lars on 08.10.2016.
  */
-public class Shot implements Serializable {
+public class ShotPosition implements Serializable {
   private float x;
   private float y;
 
-  public Shot(float x, float y) {
+  public ShotPosition(float x, float y) {
     this.x = x;
     this.y = y;
   }

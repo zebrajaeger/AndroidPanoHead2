@@ -1,4 +1,7 @@
-package de.zebrajaeger.androidpanohead2.shot;
+package de.zebrajaeger.androidpanohead2.shot.shooter;
+
+import de.zebrajaeger.androidpanohead2.shot.CalculatorData;
+import de.zebrajaeger.androidpanohead2.shot.ShotPosition;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
@@ -10,9 +13,9 @@ import java.util.List;
  */
 public class ShooterScript implements Serializable{
   private CalculatorData calculationData;
-  private List<Shot> shots;
+  private List<ShotPosition> shots;
 
-  public ShooterScript(CalculatorData calculationData, List<Shot> shots) {
+  public ShooterScript(CalculatorData calculationData, List<ShotPosition> shots) {
     this.calculationData = calculationData;
     this.shots = shots;
   }
@@ -21,7 +24,7 @@ public class ShooterScript implements Serializable{
     return calculationData;
   }
 
-  public List<Shot> getShots() {
+  public List<ShotPosition> getShots() {
     return shots;
   }
 
@@ -34,7 +37,7 @@ public class ShooterScript implements Serializable{
   private final float camFovY;
   private Bounds2D bounds2D;
 
-  public ShooterScript(List<Shot> shots, float camFovX, float camFovY) {
+  public ShooterScript(List<ShotPosition> shots, float camFovX, float camFovY) {
     this.shots = shots;
     this.camFovX = camFovX;
     this.camFovY = camFovY;
@@ -49,7 +52,7 @@ public class ShooterScript implements Serializable{
 
       float hx = camFovX / 2f;
       float hy = camFovY / 2f;
-      for (Shot shot : shots) {
+      for (ShotPosition shot : shots) {
         boundX1 = Math.min(boundX1, shot.getX() - hx);
         boundX2 = Math.max(boundX2, shot.getX() + hx);
         boundY1 = Math.min(boundY1, shot.getY() - hy);

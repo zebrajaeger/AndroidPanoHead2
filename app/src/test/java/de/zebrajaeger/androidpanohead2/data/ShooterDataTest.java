@@ -1,12 +1,5 @@
 package de.zebrajaeger.androidpanohead2.data;
 
-import de.zebrajaeger.androidpanohead2.shot.Shot;
-
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.util.List;
-
 /**
  * Created by lars on 08.10.2016.
  */
@@ -19,7 +12,7 @@ public class ShooterDataTest {
     sd.setOverlapWidth(0.25d);
 
     Assert.assertEquals(sd.canMakeRow(), true);
-    List<Shot> rowShots = sd.createRowShots(0.0d);
+    List<ShotPosition> rowShots = sd.createRowShots(0.0d);
     Assert.assertEquals(rowShots.size(), 3);
     Assert.assertEquals(rowShots.get(0).getX(), 5.0d, 0.00001d);
     Assert.assertEquals(rowShots.get(1).getX(), 10.0d, 0.00001d);
@@ -34,7 +27,7 @@ public class ShooterDataTest {
     sd.setOverlapWidth(0.25d);
 
     Assert.assertEquals(sd.canMakeRow(), true);
-    List<Shot> rowShots = sd.createRowShots(0.0d);
+    List<ShotPosition> rowShots = sd.createRowShots(0.0d);
     Assert.assertEquals(rowShots.size(), 3);
     Assert.assertEquals(rowShots.get(0).getX(), 5.0d, 0.00001d);
     Assert.assertEquals(rowShots.get(1).getX(), 10.5d, 0.00001d);
@@ -49,7 +42,7 @@ public class ShooterDataTest {
     sd.setOverlapWidth(0.25d);
 
     Assert.assertEquals(sd.canMakeRow(), true);
-    List<Shot> rowShots = sd.createRowShots(0.0d);
+    List<ShotPosition> rowShots = sd.createRowShots(0.0d);
     Assert.assertEquals(rowShots.size(), 45);
     Assert.assertEquals(rowShots.get(0).getX(), 5.0d, 0.00001d);
   }
@@ -62,7 +55,7 @@ public class ShooterDataTest {
     sd.setOverlapWidth(0.25d);
 
     Assert.assertEquals(sd.canMakeRow(), true);
-    List<Shot> rowShots = sd.createRowShots(0.0d);
+    List<ShotPosition> rowShots = sd.createRowShots(0.0d);
     Assert.assertEquals(rowShots.size(), 45);
     Assert.assertEquals(rowShots.get(0).getX(), 5.0d, 0.00001d);
   }*/
